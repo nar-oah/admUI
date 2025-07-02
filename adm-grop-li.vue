@@ -5,7 +5,7 @@
 </template>
 
 <script lang="ts">
-	import adm from "../sdk/adm.ts"
+	import adm from "../sdk/adm"
 	export default {
 		name: "admGropLi",
 		props: {
