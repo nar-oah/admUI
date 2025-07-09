@@ -82,7 +82,6 @@
 					const offBase = itemHeight * i
 					this.grop.random[i] = adm.px2rpx(offRandom[i] > offBase ? offRandom[i] : offRandom[i] + offBase)
 				}
-				console.log(this.msgArr.length, offRange, itemHeight, this.grop.random[0], this.grop.random[1]);
 			},
 			getType() {
 				if (this.msgArr.length <= 3) {
@@ -127,7 +126,7 @@
 
 		.container {
 			width: $adm-container-width;
-			background-color: $adm-secondary-dark;
+			background-color: $adm-container-color;
 			margin: $adm-grop-spacing 0;
 
 			&-sm {
@@ -146,7 +145,8 @@
 				position: absolute;
 				transform: rotate(-90deg);
 				transform-origin: right top;
-				margin-left: -$adm-pss-width-base;
+        width: $adm-height-mini;
+				margin-left: -$adm-height-mini;
 			}
 		}
 	}
