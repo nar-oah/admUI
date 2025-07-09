@@ -37,7 +37,6 @@
 <style lang="scss">
 	.grop-li {
     display: flex;
-		flex-direction: row;
 		flex-wrap: wrap;
 	}
 </style>

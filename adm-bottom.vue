@@ -53,7 +53,6 @@
 <style lang="scss">
 	.bottom-wrap {
     display: flex;
-		flex-direction: row;
 		position: fixed;
 		right: 0;
 		bottom: 0;

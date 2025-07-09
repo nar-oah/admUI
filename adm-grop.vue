@@ -67,15 +67,6 @@
           }).exec()
 				}
 
-        // NOTE: 无优化写法
-        // query.select('#gropContainer').boundingClientRect()
-        // query.select('#gropWrap').boundingClientRect()
-        // query.exec((res) => {
-        //   const [containerRect, wrapRect] = res
-        //   this.grop.width = containerRect.width
-        //   this.grop.height = containerRect.height
-        //   this.grop.margin = wrapRect.height - containerRect.height
-        // })
 				this.grop.width = adm.grop.width
 				this.grop.height = adm.grop[typeHeight]
 				this.grop.margin = adm.grop.margin
@@ -109,14 +100,12 @@
 <style lang="scss">
 	.grop-wrap {
     display: flex;
-		flex-direction: row;
 		justify-content: center;
 		align-items: center;
 		width: 100%;
 
 		.logo {
       display: flex;
-			flex-direction: row;
 			justify-content: center;
 			align-items: center;
 			position: absolute;
