@@ -52,6 +52,7 @@
 
 <style lang="scss">
 	.bottom-wrap {
+    display: flex;
 		flex-direction: row;
 		position: fixed;
 		right: 0;
@@ -68,6 +69,8 @@
 
     .bottom {
       justify-content: flex-end;
+      /* width: 100px; */
+      /* TODO: 应当在html模块中添加style项来使其宽度不超过tab，具体width值应由dom计算 */
       z-index: 0;
     }
   }

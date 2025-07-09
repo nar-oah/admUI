@@ -93,6 +93,7 @@
 		left: $adm-font-spacing-fill;
 
 		.text {
+      display: flex;
 			color: $adm-primary-dark;
 			font-size: $adm-font-size-sm;
 			letter-spacing: $adm-font-spacing-fill;

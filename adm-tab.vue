@@ -34,6 +34,7 @@
 		methods: {
 			inClick(index : number) {
 				this.$emit("clickItem", index)
+        // TODO: 点击切换无效，待修复
 			}
 		}
 	}

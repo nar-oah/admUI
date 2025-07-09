@@ -43,12 +43,13 @@
 
 <style lang="scss">
 	.icon {
+    display: flex;
 		align-items: center;
 
 		.text {
 			width: $adm-font-size-lg;
 			font-size: $adm-font-size-lg;
-			/* 更换字体后将line-height删除 */
+			/* TODO: 更换字体后将line-height删除 */
 			line-height: $adm-font-height-lg;
 		}
 

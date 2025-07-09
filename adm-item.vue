@@ -1,16 +1,15 @@
 <template>
 	<view id="itemWrap" :class="[`item-wrap item-wrap-${theme}`]">
-		<view class="border" :style="{'left':`${border.random[0]}rpx`}">
-			<text id="itemBorder" :class="[`text text-${theme}`]">{{border.text.repeat(border.repeat)}}</text>
+		<view class="border">
+			<text id="itemBorder" :class="[`text text-${theme}`]" :style="{'margin-left':`${border.random[0]}rpx`}">{{border.text.repeat(border.repeat)}}</text>
 		</view>
-		<view id="itemLeft" :style="{ 'height':`${left.height?left.height:''}rpx`,'position':'absolute'}">
+		<view id="itemLeft" :style="{ 'height':`${left.height?left.height:''}rpx`,'position':'absolute', 'overflow':'hidden'}">
 			<view class="left" v-for="n in left.repeat" :key="n" :style="{'top':`${left.random[0]}rpx`}">
 				<text :class="[`text text-${theme}`]">{{leftText}}</text>
 				<view :class="[`seal seal-${theme}`]">封</view>
 			</view>
 		</view>
-		<view id="itemMain" :class="[`${main.row} main-${theme}`]"
-			:style="{'height':`${main.height?main.height:''}rpx`}">
+		<view id="itemMain" :class="[`${main.row} main-${theme}`]" :style="{'height':`${main.height?main.height:''}rpx`}">
 			<view v-if="isJustify && height" v-for="(item,index) in main.justify" :key="index">
 				{{item}}
 			</view>
@@ -18,8 +17,8 @@
 				<slot>管理局</slot>
 			</view>
 		</view>
-		<view class="border" :style="{'left':`${border.random[1]}rpx`}">
-			<text :class="[`text text-${theme}`]">{{border.text.repeat(border.repeat)}}</text>
+		<view class="border">
+			<text :class="[`text text-${theme}`]" :style="{'margin-left':`${border.random[1]}rpx`}">{{border.text.repeat(border.repeat)}}</text>
 		</view>
 	</view>
 </template>
@@ -103,7 +102,6 @@
           query.exec((res) => {
             const [wrapRect, borderRect, leftRect, mainRect] = res
   					const borderWidth = this.isRow ? borderRect.height : borderRect.width
-  					const borderHeight = this.isRow ? borderRect.width : borderRect.height
   					const mainHeight = this.isRow ? mainRect.width : mainRect.height
 
   					adm.item.wrap.width = wrapRect.width
@@ -138,22 +136,30 @@
 <style lang="scss">
 	.item-wrap {
 		@include theme(false, $adm-primary-light);
-		flex-direction: row;
+    display: flex;
 		flex-wrap: wrap;
 		width: $adm-pss-width-base;
+    overflow: hidden;
 
 		.border {
-			line-height: $adm-font-height-mini;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
 
 			.text {
 				@include theme($adm-primary-dark, false);
 				font-size: $adm-font-size-mini;
+        white-space: nowrap;
 			}
 		}
 
 		.left {
+      display: flex;
+      flex-direction: column;
+      position: relative;
 			align-items: center;
 			width: $adm-pss-width-mini;
+      overflow: hidden;
 
 			.text {
 				@include theme($adm-primary-dark, false);
@@ -164,6 +170,7 @@
 
 			.seal {
 				@include theme($adm-primary-light, $adm-primary-dark);
+        display: flex;
 				justify-content: center;
 				align-items: center;
 				width: $adm-pss-width-mini;
@@ -176,17 +183,18 @@
 
 		.main {
 			@include theme($adm-primary-dark, false);
+      display: flex;
+      flex-direction: column;
 			justify-content: space-between;
-			left: $adm-pss-width-mini + 5.26rpx;
+			margin-left: $adm-pss-width-mini + 5.26rpx;
 			width: $adm-font-size-base;
 			line-height: $adm-font-height-md;
 
 			&-row {
 				@include theme($adm-primary-dark, false);
-				left: $adm-pss-width-mini + 5.26rpx;
+				margin-left: $adm-pss-width-mini + 5.26rpx;
 				transform: rotate(90deg);
 				transform-origin: math.div($adm-font-size-base, 2) math.div($adm-font-size-base, 2);
-				margin: $adm-pss-spacing 0;
 
 				>view {
 					font-size: $adm-font-size-base;

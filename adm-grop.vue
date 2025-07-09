@@ -1,13 +1,13 @@
 <template>
 	<view id="gropWrap" class="grop-wrap">
 		<view class="logo">
-			<adm-icons :is-random="isRandom" class="icon">
-				<slot></slot>
+			<adm-icons :is-random="false" class="icon">
+        <slot></slot>
 			</adm-icons>
 			<adm-item class="pss" :height="grop.margin + grop.height" :is-justify="true">管理局</adm-item>
 		</view>
 		<view id="gropContainer" :class="[`container container-${grop.type}`]">
-			<adm-item class="pss" :style="{'top':`${grop.random[index]}rpx`}" :is-row="true" :height="grop.width"
+			<adm-item class="pss" :style="{'margin-top':`${grop.random[index]}rpx`}" :is-row="true" :height="grop.width"
 				v-for="(item,index) in msgArr" :key="index">
 				{{item}}
 			</adm-item>
@@ -67,6 +67,15 @@
           }).exec()
 				}
 
+        // NOTE: 无优化写法
+        // query.select('#gropContainer').boundingClientRect()
+        // query.select('#gropWrap').boundingClientRect()
+        // query.exec((res) => {
+        //   const [containerRect, wrapRect] = res
+        //   this.grop.width = containerRect.width
+        //   this.grop.height = containerRect.height
+        //   this.grop.margin = wrapRect.height - containerRect.height
+        // })
 				this.grop.width = adm.grop.width
 				this.grop.height = adm.grop[typeHeight]
 				this.grop.margin = adm.grop.margin
@@ -99,26 +108,31 @@
 
 <style lang="scss">
 	.grop-wrap {
+    display: flex;
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
-		width: 100vw;
+		width: 100%;
 
 		.logo {
+      display: flex;
 			flex-direction: row;
 			justify-content: center;
 			align-items: center;
 			position: absolute;
 			right: 0;
 			z-index: 1;
-			height: 100%;
 
 			.pss {
 				position: absolute;
 			}
 
 			.icon {
+        display: flex;
+        justify-content: center;
+        align-items: center;
 				width: $adm-font-height-lg * 2;
+        overflow: hidden;
 			}
 		}
 
@@ -143,7 +157,7 @@
 				position: absolute;
 				transform: rotate(-90deg);
 				transform-origin: right top;
-				left: -$adm-pss-width-base;
+				margin-left: -$adm-pss-width-base;
 			}
 		}
 	}
