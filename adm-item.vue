@@ -195,6 +195,8 @@
 
 			&-row {
 				@include theme($adm-primary-dark, false);
+        display: flex;
+        flex-direction: row;
 				margin-left: $adm-pss-width-mini + 5.26rpx;
 				transform: rotate(90deg);
 				transform-origin: math.div($adm-font-size-base, 2) math.div($adm-font-size-base, 2);

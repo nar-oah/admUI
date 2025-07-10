@@ -1,13 +1,13 @@
 <template>
 	<view id="gropWrap" class="grop-wrap">
 		<view class="logo">
-			<adm-icons :is-random="false" class="icon">
+			<adm-icons :is-random="true" class="icon">
         <slot></slot>
 			</adm-icons>
 			<adm-item class="pss" :height="grop.margin + grop.height" :is-justify="true">管理局</adm-item>
 		</view>
 		<view id="gropContainer" :class="[`container container-${grop.type}`]">
-			<adm-item class="pss" :style="{'margin-top':`${grop.random[index]}rpx`}" :is-row="true" :height="grop.width"
+			<adm-item class="pss" :style="{'margin-top':`${grop.random[index]}rpx`}" :is-row="true" :height="grop.width" :is-justify="true"
 				v-for="(item,index) in msgArr" :key="index">
 				{{item}}
 			</adm-item>
