@@ -21,7 +21,7 @@
 			},
 			fillText: {
 				type: String,
-				default: '委员会',
+				default: '委員會',
 				required: false
 			},
 			height: {
@@ -96,6 +96,7 @@
       display: flex;
       overflow: hidden;
 			color: $adm-primary-dark;
+      font-family: pss-main;
 			font-size: $adm-font-size-sm;
 			letter-spacing: $adm-font-spacing-fill;
 			line-height: $adm-font-height-sm;

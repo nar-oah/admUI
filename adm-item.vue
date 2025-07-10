@@ -30,12 +30,12 @@
 		props: {
 			borderText: {
 				type: String,
-				default: '委员会',
+				default: '委員會',
 				required: false
 			},
 			leftText: {
 				type: String,
-				default: '管理局委员会',
+				default: '管理局委員會',
 				required: false
 			},
 			isRev: {
@@ -149,6 +149,7 @@
 			.text {
 				@include theme($adm-primary-dark, false);
 				font-size: $adm-font-size-mini;
+        font-family: pss-border;
         white-space: nowrap;
 			}
 		}
@@ -163,6 +164,7 @@
 
 			.text {
 				@include theme($adm-primary-dark, false);
+        font-family: pss-left;
 				font-size: $adm-font-size-mini;
 				width: $adm-font-size-mini;
 				line-height: $adm-pss-width-mini;
@@ -176,6 +178,7 @@
 				width: $adm-pss-width-mini;
 				height: $adm-pss-width-mini;
 				border-radius: 50%;
+        font-family: pss-left;
 				font-size: $adm-font-size-mini;
 			}
 		}
@@ -197,11 +200,13 @@
 				transform-origin: math.div($adm-font-size-base, 2) math.div($adm-font-size-base, 2);
 
 				>view {
+          font-family: pss-main;
 					font-size: $adm-font-size-base;
 				}
 			}
 
 			>view {
+        font-family: pss-main;
 				font-size: $adm-font-size-base;
 			}
 		}

@@ -48,8 +48,8 @@
 
 		.text {
 			width: $adm-font-size-lg;
+      font-family: adm-icon;
 			font-size: $adm-font-size-lg;
-			/* TODO: 更换字体后将line-height删除 */
 			line-height: $adm-font-height-lg;
 		}
 

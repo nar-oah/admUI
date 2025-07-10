@@ -13,7 +13,7 @@
 		props: {
 			fillText: {
 				type: String,
-				default: '委员会',
+				default: '委員會',
 				required: false
 			},
 			tabArr: {
