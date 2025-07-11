@@ -7,6 +7,7 @@
 </template>
 
 <script lang="ts">
+  import adm from '../sdk/adm';
 	export default {
 		name: "admTab",
 		emits: ['clickItem'],
@@ -31,10 +32,12 @@
 
 			};
 		},
+    mounted() {
+      adm.tab = true
+    },
 		methods: {
 			inClick(index : number) {
 				this.$emit("clickItem", index)
-        // TODO: 点击切换无效，待修复
 			}
 		}
 	}

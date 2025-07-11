@@ -1,5 +1,5 @@
 <template>
-	<view class="grop-li">
+  <view class="grop-li" :style="{'margin-left': `${tab}rpx`}">
 		<slot></slot>
 	</view>
 </template>
@@ -22,10 +22,11 @@
 		},
 		data() {
 			return {
-
+        tab: 0 
 			};
 		},
 		mounted() {
+      this.tab = adm.tab ? adm.px2rpx(adm.item.wrap.width) : 0
 			if (this.minRandom || this.maxRandom) {
 				const ranArr = adm.getRandom(1, this.minRandom, this.maxRandom)
 				adm.grop.pssRandom = ranArr[0]

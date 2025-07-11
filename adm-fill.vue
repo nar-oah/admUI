@@ -1,7 +1,7 @@
 <template>
 	<view id="fillWrap" :class="[isRow ? 'wrap row' : 'wrap']">
 		<slot></slot>
-		<view class="fill" :style="{'height': `${fill.height}rpx`}">
+		<view class="fill">
 			<text id="fillText" class="text" :style="{'margin-top':`-${fill.random[0]}rpx`}">
 				{{fillText.repeat(fill.repeat)}}
 			</text>
@@ -90,7 +90,8 @@
 
 	.fill {
 		width: $adm-pss-width-base - $adm-font-spacing-fill;
-		left: $adm-font-spacing-fill;
+    height: 100%;
+		margin-left: $adm-font-spacing-fill;
 
 		.text {
       display: flex;
