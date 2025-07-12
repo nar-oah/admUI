@@ -52,7 +52,10 @@
 		},
 		methods: {
 			initDom() {
-				const typeHeight = `${this.grop.type}Height`
+        type SizeType = 'sm' | 'md' | 'lg';
+        type HeightType = 'smHeight' | 'mdHeight' | 'lgHeight';
+        const type: SizeType = this.grop.type;
+				const typeHeight: HeightType = `${type}Height`
         const query = uni.createSelectorQuery().in(this)
 
 				if (!adm.grop.width || !adm.grop[typeHeight]) {
