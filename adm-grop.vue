@@ -7,6 +7,7 @@
 			<adm-item class="pss" :height="grop.margin + grop.height" :is-justify="true">管理局</adm-item>
 		</view>
 		<view id="gropContainer" :class="[`container container-${grop.type}`]">
+      <adm-background :is-thin="true" :is-rev="true">{{background}}</adm-background>
 			<adm-item class="pss" :style="{'margin-top':`${grop.random[index]}rpx`}" :is-row="true" :height="grop.width" :is-justify="true"
 				v-for="(item,index) in msgArr" :key="index">
 				{{item}}
@@ -33,7 +34,12 @@
 			msgArr: {
 				type: Array,
 				required: true
-			}
+			},
+			background: {
+				type: String,
+				default: 'APA-0032為由487個非週期性擬態晶體構成的動態集合體，其外部可見結構以0.5Hz頻率在正十二面體與超立方體間拓樸轉換。光譜分析揭示內部存在量子化鋁鎳鈷合金核心（質量波動於2.3-17.4g/cm³區間），在第7次XK級現實重建實驗中曾記錄到其表面析出類拜占庭紋章學符號（現歸類為eVELL-32型非典型語素）。接觸性活化測試顯示，目標會在目標生物前額葉產生持續13毫秒的β-輻射脈衝，引發顳葉持續性情境復現現象。 2024年1月15日事故報告中，D-4421在實驗後72小時內準確繪製出西元前539年巴比倫城牆的三維定位座標（準確率98.73%），此能力於暴露120小時後隨實驗體腦組織玻化消失。',
+				required: false
+			},
 		},
 		data() {
 			return {
@@ -128,9 +134,11 @@
 		}
 
 		.container {
+      position: relative;
 			width: $adm-container-width;
 			background-color: $adm-container-color;
 			margin: $adm-grop-spacing 0;
+      overflow: hidden;
 
 			&-sm {
 				height: $adm-height-sm;

@@ -1,6 +1,6 @@
 <template>
 	<view class="icon" :style="{'transform': `rotate(${angle + random[0]}deg)`}">
-		<text :class="[`text ${this.isSelect ? 'select' : 'normal'}`]">
+		<text :class="[`text ${isSelect ? 'select' : 'normal'}`]">
 			<slot></slot>
 		</text>
 	</view>
