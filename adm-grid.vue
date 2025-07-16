@@ -4,7 +4,7 @@
     <slot></slot>
 	</view>
   <view class="grid-row">
-    <view class="item" v-for="(object, index) in content" :key="index">
+    <view class="item" v-for="(object, index) in row" :key="index" :style="{'margin-top':`${object.top}rpx`}">
       <adm-fill :is-row="true">
         <adm-item :is-row="true" :is-justify="true" :height="height">{{object.item[0]}}</adm-item>
         <adm-item :is-row="true" :is-justify="true" :height="height">{{object.item[1]}}</adm-item>
@@ -13,21 +13,30 @@
   </view>
   <view id="gridColmn" class="grid-colmn">
     <adm-fill class="item">
-      <adm-item v-for="(object, index) in content" :key="index">{{object.type}}</adm-item>
+      <adm-item v-for="(item, index) in colLeft" :key="index">{{item}}</adm-item>
     </adm-fill>
     <adm-fill class="item">
-      <adm-item v-for="(object, index) in content" :key="index">{{object.type}}</adm-item>
+      <adm-item v-for="(item, index) in colRight" :key="index">{{item}}</adm-item>
     </adm-fill>
   </view>
 </template>
 
 <script lang="ts">
   import adm from '../sdk/adm';
+  import type { PropType } from 'vue'
+  interface ContentItem {
+    type: string;
+    item: string[];
+  }
+  interface rowItem{
+    top: number;
+    item: string[];
+  }
 	export default {
 		name: "admGrid",
     props: {
 			content: {
-				type: Array,
+				type: Array as PropType<ContentItem[]>,
 				default: () => [{ type: '藥片', item: ['孟魯司特鈉片', '孟魯司特鈉片'] },{ type: '藥片', item: ['孟魯司特鈉片', '孟魯司特鈉片'] }],
 				required: false
 			},
@@ -44,11 +53,15 @@
     },
 		data() {
 			return {
-        height: 0
+        height: 0,
+        row: [] as rowItem[],
+        colLeft: [] as string[],
+        colRight: [] as string[]
 			};
 		},
 		mounted() {
 			this.initDom()
+      this.initPosition()
 		},
     methods: {
       initDom() {
@@ -60,9 +73,48 @@
         })
       },
       initPosition() {
-        // TODO: 处理输入的数组结构属性：横向拆分为二维数组，竖向拆分为两个竖向数组。
-        // TODO: 重点是一定使其同一行的竖向数组项字数一致，若不一致则填充空项
-        // TODO: 动态计算横向间距为竖向每项的高，通过字数计算item高公式：adm.item.wrap.height + adm.item.unit.main * 字数
+        var singleType: string
+        var singleItem: string | undefined
+
+        this.content.forEach((object) => {
+          var item = object.item
+          if(singleType && singleItem) {
+            const isEqual = singleType.length == object.type.length
+            const singleHeight = this.getHeight(singleType.length)
+            const singleArray = [singleItem, isEqual ? object.item[0] : singleItem]
+            const singleRow: rowItem = {top: singleHeight, item: singleArray}
+
+            this.row.push(singleRow)
+            this.colLeft.push(object.type)
+            this.colRight.push(isEqual ? object.type : singleType)
+            item = isEqual ? item.splice(0, 1) : item
+          }
+
+          const height = this.getHeight(object.type.length)
+          const repeat = Math.trunc(item.length / 2)
+          const rowArray = this.getRow(item, repeat, height)
+          const colArray = Array(repeat).fill(object.type)
+          const isSingle = item.length % 2 != 0
+
+          this.row = this.row.concat(rowArray)
+          this.colLeft = this.colLeft.concat(colArray)
+          this.colRight = this.colRight.concat(colArray)
+          singleType = isSingle ? object.type : ''
+          singleItem = isSingle ? item.at(-1) : ''
+        })
+      },
+      getHeight(length: number): number {
+        // FIX: 此时adm.item内容尚未写入，因此height值在不更新的情况下为0
+        const height = adm.item.wrap.height + adm.item.unit.main * length
+        const top = height - adm.item.wrap.width
+        return adm.px2rpx(top)
+      },
+      getRow(array: string[], repeat: number, height: number): rowItem[] {
+        return Array.from({ length: repeat}, (_, i) => {
+          const start = i * 2
+          const end = start + 2
+          return {top: height, item: array.slice(start, end)}
+        })
       }
     }
 	}
@@ -87,7 +139,7 @@
 
   .item {
     height: $adm-pss-width-base;
-    margin-top: 138.6rpx;
+    /* margin-top: 138.6rpx; */
   }
 }
 
