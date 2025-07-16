@@ -74,12 +74,12 @@
 				},
 				main: {
 					height: 0,
-					row: this.isRow ? 'main-row' : 'main',
+					row: 'main',
 					justify: [...this.$slots.default()[0].children]
 				}
 			};
 		},
-		mounted() {
+		 mounted() {
 			adm.getScreendata()
 			this.initDom()
 			this.initBorder()
@@ -101,17 +101,20 @@
           query.select('#itemMain').boundingClientRect()
           query.exec((res) => {
             const [wrapRect, borderRect, leftRect, mainRect] = res
+            const borderHeight = this.isRow ? borderRect.width : borderRect.height
   					const borderWidth = this.isRow ? borderRect.height : borderRect.width
+            const leftHeight = this.isRow ? leftRect.height : leftRect.width
   					const mainHeight = this.isRow ? mainRect.width : mainRect.height
 
-  					adm.item.wrap.width = wrapRect.width
-  					adm.item.wrap.height = borderRect.height * 2
+  					adm.item.wrap.width = this.isRow ? wrapRect.height : wrapRect.width
+  					adm.item.wrap.height = borderHeight * 2
   					adm.item.unit.border = borderWidth / (this.borderText.length + 0.5)
-  					adm.item.unit.left = leftRect.height / this.leftText.length
+  					adm.item.unit.left =  leftHeight / this.leftText.length
   					adm.item.unit.main = mainHeight / this.$slots.default()[0].children.length
   					adm.item.updated = adm.screenData.width
           })
 				}
+        this.main.row = this.isRow ? 'main-row' : 'main'
 			},
 			initBorder() {
 				const borderWidth = adm.item.unit.border * (this.borderText.length + 0.5)

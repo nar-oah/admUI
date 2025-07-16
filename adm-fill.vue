@@ -33,6 +33,7 @@
 		data() {
 			return {
 				fill: {
+          bottom: 0,
 					height: 0,
 					repeat: 1,
 					random: [0]
@@ -47,31 +48,24 @@
 		},
 		methods: {
 			initDom() {
-				if (!adm.fill.width || !adm.fill.bottom || !adm.fill.text) {
-          const query = uni.createSelectorQuery().in(this)
-          query.select('#fillWrap').boundingClientRect()
-          query.select('#fillText').boundingClientRect()
-          query.exec((res) => {
-            const [fillRect, textRect] = res
-            adm.fill.width = fillRect.width
-            adm.fill.bottom = fillRect.bottom
-            adm.fill.text = adm.px2rpx(this.isRow ? textRect.width : textRect.height)
-          })
+        const query = uni.createSelectorQuery().in(this)
+				if (!adm.fill) {
+          query.select('#fillText').boundingClientRect((textRect : any) => {
+            adm.fill = adm.px2rpx(this.isRow ? textRect.width : textRect.height)
+          }).exec()
 				}
+        query.select('#fillWrap').boundingClientRect((fillRect : any) => {
+          this.fill.bottom = this.isRow ? fillRect.width : fillRect.height 
+        }).exec()
 			},
 			getFill() {
-				var height: number
-				if (this.height) {
-					height = this.isRow ? this.height - adm.fill.width : this.height - adm.fill.bottom
-				} else {
-					height = this.isRow ? adm.screenData.width - adm.fill.width : adm.screenData.height - adm.fill.bottom
-				}
-				//若item已填满整页，则仅象征性增加一小段fill空间
-				height <= 0 ? height = 50 : height
+        const screenHeight = this.isRow ? adm.screenData.width : adm.screenData.height
+        const height = this.height ? this.height - this.fill.bottom : screenHeight - this.fill.bottom
 
-				this.fill.height = adm.px2rpx(height)
-				this.fill.random = adm.getRandom(1, 0, adm.fill.text)
-				this.fill.repeat = Math.ceil(this.fill.height / adm.fill.text) + 1
+				//若item已填满整页，则仅象征性增加一小段fill空间
+				this.fill.height = adm.px2rpx(height <= 0 ? 50 : height)
+				this.fill.random = adm.getRandom(1, 0, adm.fill)
+				this.fill.repeat = Math.ceil(this.fill.height / adm.fill) + 1
 			}
 		}
 	}
@@ -90,7 +84,6 @@
 
 	.fill {
 		width: $adm-pss-width-base - $adm-font-spacing-fill;
-    height: 100%;
 		margin-left: $adm-font-spacing-fill;
 
 		.text {
