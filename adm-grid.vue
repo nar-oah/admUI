@@ -7,8 +7,8 @@
     <view class="grid-row">
       <view class="item" v-for="(object, index) in row" :key="index" :style="{'margin-top':`${object.top}rpx`}">
         <adm-fill :is-row="true">
-          <adm-item :is-row="true" :is-justify="true" :height="height">{{object.item[0]}}</adm-item>
-          <adm-item :is-row="true" :is-justify="true" :height="height">{{object.item[1]}}</adm-item>
+          <adm-item :is-row="true" :is-justify="true" :height="width">{{object.item[0]}}</adm-item>
+          <adm-item :is-row="true" :is-justify="true" :height="width">{{object.item[1]}}</adm-item>
         </adm-fill>
       </view>
     </view>
@@ -55,7 +55,7 @@
     },
 		data() {
 			return {
-        height: 0,
+        width: 0,
         tab: 0,
         row: [] as rowItem[],
         colLeft: [this.content[0].type] as string[],
@@ -73,7 +73,8 @@
         query.select('#gridColmn').boundingClientRect()
         query.exec((res) => {
           const [colmnRect] = res
-          this.height = colmnRect.width / 2
+          this.width= colmnRect.width / 2
+          adm.grid.width = this.width
         })
       },
       initPosition() {
@@ -90,6 +91,7 @@
           this.row = this.row.concat(rowArray)
           this.colLeft = this.colLeft.concat(colArray)
           this.colRight = this.colRight.concat(colArray)
+          adm.grid.height.push(height)
           singleType = isSingle ? object.type : ''
           singleItem = isSingle ? item.at(-1) : ''
         })
@@ -130,6 +132,8 @@
 }
 
 .grid-item {
+  display: flex;
+  flex-direction: row;
   position: absolute;
   z-index: 1;
 }
