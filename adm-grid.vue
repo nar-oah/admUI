@@ -55,7 +55,7 @@
 			return {
         height: 0,
         row: [] as rowItem[],
-        colLeft: [] as string[],
+        colLeft: [this.content[0].type] as string[],
         colRight: [] as string[]
 			};
 		},
@@ -75,6 +75,7 @@
       initPosition() {
         var singleType: string
         var singleItem: string | undefined
+        this.colLeft = []
 
         this.content.forEach((object) => {
           var item = object.item
@@ -104,7 +105,6 @@
         })
       },
       getHeight(length: number): number {
-        // FIX: 此时adm.item内容尚未写入，因此height值在不更新的情况下为0
         const height = adm.item.wrap.height + adm.item.unit.main * length
         const top = height - adm.item.wrap.width
         return adm.px2rpx(top)
@@ -139,7 +139,6 @@
 
   .item {
     height: $adm-pss-width-base;
-    /* margin-top: 138.6rpx; */
   }
 }
 
