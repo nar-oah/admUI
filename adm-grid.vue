@@ -1,23 +1,25 @@
 <template>
   <adm-background class="grid-background" :min-ran="-3" :max-ran="3">{{background}}</adm-background>
-	<view class="grid-item">
-    <slot></slot>
-	</view>
-  <view class="grid-row">
-    <view class="item" v-for="(object, index) in row" :key="index" :style="{'margin-top':`${object.top}rpx`}">
-      <adm-fill :is-row="true">
-        <adm-item :is-row="true" :is-justify="true" :height="height">{{object.item[0]}}</adm-item>
-        <adm-item :is-row="true" :is-justify="true" :height="height">{{object.item[1]}}</adm-item>
+  <view :style="{'margin-left': `${tab}rpx`}">
+    <view class="grid-item">
+      <slot></slot>
+    </view>
+    <view class="grid-row">
+      <view class="item" v-for="(object, index) in row" :key="index" :style="{'margin-top':`${object.top}rpx`}">
+        <adm-fill :is-row="true">
+          <adm-item :is-row="true" :is-justify="true" :height="height">{{object.item[0]}}</adm-item>
+          <adm-item :is-row="true" :is-justify="true" :height="height">{{object.item[1]}}</adm-item>
+        </adm-fill>
+      </view>
+    </view>
+    <view id="gridColmn" class="grid-colmn">
+      <adm-fill class="item">
+        <adm-item v-for="(item, index) in colLeft" :key="index">{{item}}</adm-item>
+      </adm-fill>
+      <adm-fill class="item">
+        <adm-item v-for="(item, index) in colRight" :key="index">{{item}}</adm-item>
       </adm-fill>
     </view>
-  </view>
-  <view id="gridColmn" class="grid-colmn">
-    <adm-fill class="item">
-      <adm-item v-for="(item, index) in colLeft" :key="index">{{item}}</adm-item>
-    </adm-fill>
-    <adm-fill class="item">
-      <adm-item v-for="(item, index) in colRight" :key="index">{{item}}</adm-item>
-    </adm-fill>
   </view>
 </template>
 
@@ -54,12 +56,14 @@
 		data() {
 			return {
         height: 0,
+        tab: 0,
         row: [] as rowItem[],
         colLeft: [this.content[0].type] as string[],
         colRight: [] as string[]
 			};
 		},
 		mounted() {
+      this.tab = adm.tab ? adm.px2rpx(adm.item.wrap.width) : 0
 			this.initDom()
       this.initPosition()
 		},
@@ -76,33 +80,32 @@
         var singleType: string
         var singleItem: string | undefined
         this.colLeft = []
-
         this.content.forEach((object) => {
-          var item = object.item
-          if(singleType && singleItem) {
-            const isEqual = singleType.length == object.type.length
-            const singleHeight = this.getHeight(singleType.length)
-            const singleArray = [singleItem, isEqual ? object.item[0] : singleItem]
-            const singleRow: rowItem = {top: singleHeight, item: singleArray}
-
-            this.row.push(singleRow)
-            this.colLeft.push(object.type)
-            this.colRight.push(isEqual ? object.type : singleType)
-            item = isEqual ? item.splice(0, 1) : item
-          }
-
+          const item = this.handleSingle(object, singleType, singleItem)
           const height = this.getHeight(object.type.length)
           const repeat = Math.trunc(item.length / 2)
           const rowArray = this.getRow(item, repeat, height)
           const colArray = Array(repeat).fill(object.type)
           const isSingle = item.length % 2 != 0
-
           this.row = this.row.concat(rowArray)
           this.colLeft = this.colLeft.concat(colArray)
           this.colRight = this.colRight.concat(colArray)
           singleType = isSingle ? object.type : ''
           singleItem = isSingle ? item.at(-1) : ''
         })
+      },
+      handleSingle(object: ContentItem, singleType: string, singleItem: string | undefined): string[] {
+        if(singleType && singleItem) {
+          const isEqual = singleType.length == object.type.length
+          const singleHeight = this.getHeight(singleType.length)
+          const singleArray = [singleItem, isEqual ? object.item[0] : singleItem]
+          const singleRow: rowItem = {top: singleHeight, item: singleArray}
+          this.row.push(singleRow)
+          this.colLeft.push(object.type)
+          this.colRight.push(isEqual ? object.type : singleType)
+          return isEqual ? object.item.splice(0, 1) : object.item
+        }
+        return object.item
       },
       getHeight(length: number): number {
         const height = adm.item.wrap.height + adm.item.unit.main * length
