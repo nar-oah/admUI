@@ -91,7 +91,6 @@
           this.row = this.row.concat(rowArray)
           this.colLeft = this.colLeft.concat(colArray)
           this.colRight = this.colRight.concat(colArray)
-          adm.grid.height.push(height)
           singleType = isSingle ? object.type : ''
           singleItem = isSingle ? item.at(-1) : ''
         })
@@ -111,6 +110,7 @@
       },
       getHeight(length: number): number {
         const height = adm.item.wrap.height + adm.item.unit.main * length
+        adm.grid.height.push(height)
         const top = height - adm.item.wrap.width
         return adm.px2rpx(top)
       },

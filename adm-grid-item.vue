@@ -1,12 +1,8 @@
 <template>
-  <!-- <view class="grid-item-wrap"> -->
-  <!--   <text id="gridItemSmall" class="small-text">管理局</text> -->
-  <!--   <text id="gridItemLarge" class="large-text">管理局</text> -->
-  <!-- </view> -->
-  <view class="grid-item-wrap" :style="{'width':`${width}rpx`,
-    'margin-top':`${random.row[0]}rpx`, 'margin-left':`${random.colmn[0]}rpx`, 'transform': `rotate(${random.rotate[0]}deg)`}">
-    <text class="small-text">{{small}}</text>
-    <text class="large-text">{{large}}</text>
+  <view class="grid-item-wrap" :style="{'width':`${width ? width : ''}rpx`,
+    'margin-top':`${random.height}rpx`, 'margin-left':`${random.width}rpx`, 'transform': `rotate(${random.rotate}deg)`}">
+    <text id="gridItemSmall" class="small-text">{{small}}</text>
+    <text id="gridItemLarge" class="large-text">{{large}}</text>
   </view>
 </template>
 
@@ -15,6 +11,10 @@
   export default {
     name:"admGridItem",
     props: {
+			index: {
+				type: Number,
+				required: true
+			},
 			large: {
 				type: String,
 				default: '還剩5片',
@@ -29,52 +29,58 @@
 				type: Boolean,
 				default: true,
 				required: false
-			},
-			width: {
-				type: Number,
-				required: true
-			},
-			height: {
-				type: Number,
-				required: true
 			}
     },
     data() {
       return {
         width: 0,
+        gap: {
+          width: 0,
+          height: 0
+        },
         random: {
-          row: [] as number[],
-          colmn: [] as number[],
-          rotate: [] as number[]
+          width: 0,
+          height: 0,
+          rotate: 0
         }
       };
     },
 		async mounted() {
-      // this.initDom()
-      // FIX: 当前random并非按照grid减去item后的长宽余量来随机的
-      // FIX: 因为width的默认值为0因此dom读取到的width始终为0，需尝试通过width ? `${width}rpx` : ''解决
-      // FIX: dom获取的值需存入adm.grid.item中
-			await this.$nextTick()
-      this.initRandom()
+      if(!adm.grid.item.height) this.initDom()
+      if(this.isRandom) {
+        await this.$nextTick()
+        this.initGap()
+        this.initRandom()
+      }
 		},
     methods: {
       initDom() {
+        const item = adm.grid.item
         const query = uni.createSelectorQuery().in(this)
         query.select('#gridItemSmall').boundingClientRect()
         query.select('#gridItemLarge').boundingClientRect()
         query.exec((res) => {
           const [smallRect, largeRect] = res
-          console.log(smallRect, largeRect);
+          item.height = smallRect.height + largeRect.height
+          item.smallWidth = smallRect.width / this.small.length
+          item.largeWidth = largeRect.width / this.large.length
         })       
       },
+      initGap() {
+        const smallWidth = adm.grid.item.smallWidth * this.small.length
+        const largeWidth = adm.grid.item.largeWidth * this.large.length
+        const itemWidth = smallWidth > largeWidth ? smallWidth : largeWidth
+        const itemColumn = Math.trunc((this.index) / 2)
+        this.gap.width = adm.grid.width - adm.item.wrap.width - itemWidth
+        this.gap.height = adm.grid.height[itemColumn] - adm.item.wrap.width - adm.grid.item.height
+      },
       initRandom() {
-        if(this.isRandom) {
-          const itemWidth = adm.px2rpx(adm.item.wrap.width)
-          this.width = adm.px2rpx(adm.grid.width)
-          this.random.row = adm.getRandom(1, 0, itemWidth)
-          this.random.colmn = adm.getRandom(1, 0, itemWidth)
-          this.random.rotate = adm.getRandom(1, -5, 5)
-        }
+        const maxWidth = adm.px2rpx(this.gap.width)
+        const maxHeight = adm.px2rpx(this.gap.height)
+        this.width = adm.px2rpx(adm.grid.width)
+        this.random.width = adm.getSingleRandom(0, maxWidth)
+        this.random.height = adm.getSingleRandom(0, maxHeight)
+        this.random.rotate = adm.getSingleRandom(-5, 5)
       }
     }
   }
@@ -84,6 +90,7 @@
 .grid-item-wrap {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 
   .small-text {
     font-family: adm-thin;
