@@ -1,9 +1,10 @@
 <template>
-  <button class="adm-button">{{ data }}</button>
+  <button class="adm-button" :style="buttonStyles">{{ data }}</button>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from "vue";
+import { computed, defineProps } from "vue";
+import adm from "@/sdk/adm";
 
 const props = defineProps({
   data: {
@@ -16,24 +17,57 @@ const props = defineProps({
     default: false,
     required: false,
   },
+  buttonType: {
+    type: String,
+    default: "icon",
+    required: false,
+  },
+  light: {
+    type: String,
+    default: "#E3B4B8",
+    required: false,
+  },
+  dark: {
+    type: String,
+    default: "#EE3F4D",
+    required: false,
+  },
+  size: {
+    type: Number,
+    default: 20,
+    required: false,
+  },
+});
+
+const buttonStyles = computed(() => {
+  const size = adm.px2rpx(props.size);
+  return {
+    "--type": `adm-${props.buttonType}`,
+    "--text-color": props.light,
+    "--bg-color": props.dark,
+    // "--size": `${size}rpx`,
+    // "--font-size": `${size * 0.9}rpx`,
+    "--size": `40rpx`,
+    "--font-size": `38rpx`,
+  };
 });
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 .adm-button {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-left: 0px;
 
-  width: 40rpx;
-  height: 40rpx;
-  color: $adm-primary-light;
-  background-color: $adm-primary-dark;
+  width: var(--size);
+  height: var(--size);
+  color: var(--text-color);
+  background-color: var(--bg-color);
   border-radius: 100%;
 
-  font-size: 36rpx;
-  font-family: adm-icon;
+  font-size: var(--font-size);
+  font-family: var(--type);
 }
 
 .adm-button:hover {
@@ -48,4 +82,3 @@ const props = defineProps({
   transform: scale(0.95);
 }
 </style>
-
