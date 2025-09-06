@@ -4,7 +4,7 @@
 
 <script setup lang="ts">
 import { computed, defineProps } from "vue";
-import adm from "@/sdk/adm";
+import { getRpx } from "./adm";
 
 const props = defineProps({
   data: {
@@ -40,15 +40,13 @@ const props = defineProps({
 });
 
 const buttonStyles = computed(() => {
-  const size = adm.px2rpx(props.size);
+  const size = getRpx(props.size);
   return {
     "--type": `adm-${props.buttonType}`,
     "--text-color": props.light,
     "--bg-color": props.dark,
-    // "--size": `${size}rpx`,
-    // "--font-size": `${size * 0.9}rpx`,
-    "--size": `40rpx`,
-    "--font-size": `38rpx`,
+    "--size": `${size}rpx`,
+    "--font-size": `${size * 0.9}rpx`,
   };
 });
 </script>
@@ -58,7 +56,8 @@ const buttonStyles = computed(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: 0px;
+  margin: 0;
+  padding: 0;
 
   width: var(--size);
   height: var(--size);
