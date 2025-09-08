@@ -2,11 +2,11 @@
   <view id="itemWrap" class="item-wrap" :style="inputStyles">
     <view class="border">
       <text id="itemBorder" class="text">
-        {{ borderText.repeat(border.repeat) }}
+        {{ border.repeat(repeat.border || 1) }}
       </text>
     </view>
     <view id="itemLeft" class="left-wrap">
-      <view class="left" v-for="n in left.repeat" :key="n">
+      <view class="left" v-for="n in repeat.left || 1" :key="n">
         <text class="text">{{ leftText }}</text>
         <view class="seal">封</view>
       </view>
@@ -15,14 +15,20 @@
       <input class="text" type="text" :placeholder="main" />
     </view>
     <view class="border">
-      <text class="text">{{ borderText.repeat(border.repeat) }}</text>
+      <text class="text">{{ border.repeat(repeat.border || 1) }}</text>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, ref, useSlots } from "vue";
-import { getRpx } from "./adm";
+import { computed, defineProps, onMounted, ref, useSlots } from "vue";
+import type { ComputedRef } from "vue";
+import { getRpx, screen, item, getRandom } from "./adm";
+import type { ItemInfo, ItemUnit, ItemWrap } from "./adm";
+interface AdditionaInfo {
+  border: number;
+  left: number;
+}
 
 const props = defineProps({
   borderText: {
@@ -52,32 +58,83 @@ const props = defineProps({
   },
   width: {
     type: Number,
-    default: 100,
+    default: 200,
     required: false,
   },
-});
-const inputStyles = computed(() => {
-  return {
-    "--fore-color": props.isRev ? props.light : props.dark,
-    "--bg-color": props.isRev ? props.dark : props.light,
-    "--height": `${getRpx(props.width)}rpx`,
-    "--border-random": `${5}rpx`,
-    "--left-random": `${5}rpx`,
-  };
 });
 const defaultMain = "管理局";
 const slots = useSlots();
 const vnodes = slots.default ? slots.default() : [{ children: defaultMain }];
 const children = vnodes[0].children;
 const main = ref<string>(typeof children === "string" ? children : defaultMain);
+const border = ref<string>(props.borderText + "-");
+const borderWidth: ComputedRef<number> = computed(
+  () => item.value.unit.border * (props.borderText.length + 0.5),
+);
+const leftHeight: ComputedRef<number> = computed(() =>
+  getRpx(item.value.unit.left * props.leftText.length),
+);
+const repeat: ComputedRef<AdditionaInfo> = computed(() => {
+  const height = getRpx(props.width);
+  const leftRepeat = Math.ceil(height / (leftHeight.value || height)) + 1;
+  return {
+    border: Math.ceil(item.value.wrap.width / borderWidth.value) + 1,
+    left: leftRepeat,
+  };
+});
+const random: ComputedRef<AdditionaInfo> = computed(() => {
+  return {
+    border: getRandom(1, -getRpx(borderWidth.value), 0)[0],
+    left: getRandom(1, -leftHeight, 0)[0],
+  };
+});
+const inputStyles = computed(() => {
+  return {
+    "--fore-color": props.isRev ? props.light : props.dark,
+    "--bg-color": props.isRev ? props.dark : props.light,
+    "--height": `${props.width}rpx`,
+    "--border-random": `${random.value.border}rpx`,
+    "--left-random": `${random.value.left}rpx`,
+  };
+});
+
+function initItem() {
+  if (item.value.updated != screen.value.width) {
+    const query = uni.createSelectorQuery().in(this);
+    query.select("#itemWrap").boundingClientRect();
+    query.select("#itemBorder").boundingClientRect();
+    query.select("#itemLeft").boundingClientRect();
+    query.select("#itemMain").boundingClientRect();
+    query.exec((res) => {
+      const [wrapRect, borderRect, leftRect, mainRect] = res;
+      const updateWrap: ItemWrap = {
+        width: wrapRect.height,
+        height: borderRect.width * 2,
+      };
+      const updateUnit: ItemUnit = {
+        border: borderRect.height / props.borderText.length + 0.5,
+        left: leftRect.height / props.leftText.length,
+        main: mainRect.width / main.value.length,
+      };
+      const updateItem: ItemInfo = {
+        updated: screen.value.width,
+        wrap: updateWrap,
+        unit: updateUnit,
+      };
+      item.value = updateItem;
+    });
+  }
+}
+onMounted(() => initItem());
 </script>
 
 <style scoped lang="scss">
 @import "./adm.scss";
 .item-wrap {
   display: flex;
-  flex-wrap: wrap;
-  width: $width-base;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  width: $height-mini;
   height: var(--height);
   overflow: hidden;
   background-color: var(--bg-color);
@@ -85,6 +142,7 @@ const main = ref<string>(typeof children === "string" ? children : defaultMain);
   .border {
     display: flex;
     align-items: center;
+    height: $font-mini;
     overflow: hidden;
 
     .text {
@@ -138,11 +196,13 @@ const main = ref<string>(typeof children === "string" ? children : defaultMain);
     display: flex;
     flex-direction: row;
     margin-left: $width-mini + 5.26rpx;
+    height: var(--height);
+    width: var(--height);
 
     .text {
-      position: absolute;
       font-family: adm-medium;
       font-size: $font-base;
+      width: 100%;
       transform: rotate(90deg);
       transform-origin: calc($font-base / 2) calc($font-base / 2);
 
@@ -152,7 +212,6 @@ const main = ref<string>(typeof children === "string" ? children : defaultMain);
       }
       :deep(.uni-input-wrapper) {
         height: $font-base;
-        width: var(--height);
       }
     }
   }
