@@ -1,12 +1,12 @@
 <template>
   <view id="itemWrap" class="item-wrap" :style="inputStyles">
     <view class="border">
-      <text id="itemBorder" class="text">
-        {{ border.repeat(repeat.border || 1) }}
+      <text id="itemBorder" class="text top">
+        {{ border.text.repeat(border.repeat || 1) }}
       </text>
     </view>
-    <view id="itemLeft" class="left-wrap">
-      <view class="left" v-for="n in repeat.left || 1" :key="n">
+    <view class="left-wrap">
+      <view id="itemLeft" class="left" v-for="n in left.repeat || 1" :key="n">
         <text class="text">{{ leftText }}</text>
         <view class="seal">封</view>
       </view>
@@ -15,20 +15,17 @@
       <input class="text" type="text" :placeholder="main" />
     </view>
     <view class="border">
-      <text class="text">{{ border.repeat(repeat.border || 1) }}</text>
+      <text class="text bottom">{{
+        border.text.repeat(border.repeat || 1)
+      }}</text>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { computed, defineProps, onMounted, ref, useSlots } from "vue";
-import type { ComputedRef } from "vue";
-import { getRpx, screen, item, getRandom } from "./adm";
+import { screen, item, getRandom, getPx } from "./adm";
 import type { ItemInfo, ItemUnit, ItemWrap } from "./adm";
-interface AdditionaInfo {
-  border: number;
-  left: number;
-}
 
 const props = defineProps({
   borderText: {
@@ -62,30 +59,22 @@ const props = defineProps({
     required: false,
   },
 });
-const defaultMain = "管理局";
-const slots = useSlots();
-const vnodes = slots.default ? slots.default() : [{ children: defaultMain }];
-const children = vnodes[0].children;
-const main = ref<string>(typeof children === "string" ? children : defaultMain);
-const border = ref<string>(props.borderText + "-");
-const borderWidth: ComputedRef<number> = computed(
-  () => item.value.unit.border * (props.borderText.length + 0.5),
-);
-const leftHeight: ComputedRef<number> = computed(() =>
-  getRpx(item.value.unit.left * props.leftText.length),
-);
-const repeat: ComputedRef<AdditionaInfo> = computed(() => {
-  const height = getRpx(props.width);
-  const leftRepeat = Math.ceil(height / (leftHeight.value || height)) + 1;
+const main = ref<string>(initMain("管理局"));
+const border = computed(() => {
+  const borderWidth = item.value.unit.border * (props.borderText.length + 0.5);
   return {
-    border: Math.ceil(item.value.wrap.width / borderWidth.value) + 1,
-    left: leftRepeat,
+    text: props.borderText + "-",
+    repeat: Math.ceil(item.value.unit.border / borderWidth) + 1,
+    topRandom: getRandom(-borderWidth, 0),
+    bottomRandom: getRandom(-borderWidth, 0),
   };
 });
-const random: ComputedRef<AdditionaInfo> = computed(() => {
+const left = computed(() => {
+  const leftHeight = item.value.unit.left * props.leftText.length;
+  const height = getPx(props.width);
   return {
-    border: getRandom(1, -getRpx(borderWidth.value), 0)[0],
-    left: getRandom(1, -leftHeight, 0)[0],
+    repeat: Math.ceil(height / (leftHeight || height)) + 1,
+    random: getRandom(-leftHeight, 0),
   };
 });
 const inputStyles = computed(() => {
@@ -93,13 +82,21 @@ const inputStyles = computed(() => {
     "--fore-color": props.isRev ? props.light : props.dark,
     "--bg-color": props.isRev ? props.dark : props.light,
     "--height": `${props.width}rpx`,
-    "--border-random": `${random.value.border}rpx`,
-    "--left-random": `${random.value.left}rpx`,
+    "--top-random": `${border.value.topRandom}rpx`,
+    "--left-random": `${left.value.random}rpx`,
+    "--bottom-random": `${border.value.bottomRandom}rpx`,
   };
 });
 
+function initMain(defaultMain: string): string {
+  const slots = useSlots();
+  const vnodes = slots.default ? slots.default() : [{ children: defaultMain }];
+  const children = vnodes[0].children;
+  return typeof children === "string" ? children : defaultMain;
+}
 function initItem() {
   if (item.value.updated != screen.value.width) {
+    // @ts-ignore
     const query = uni.createSelectorQuery().in(this);
     query.select("#itemWrap").boundingClientRect();
     query.select("#itemBorder").boundingClientRect();
@@ -146,11 +143,16 @@ onMounted(() => initItem());
     overflow: hidden;
 
     .text {
-      margin-left: var(--border-random);
       color: var(--fore-color);
       font-size: $font-mini;
       font-family: adm-regular;
       white-space: nowrap;
+    }
+    .top {
+      margin-left: var(--top-random);
+    }
+    .bottom {
+      margin-left: var(--bottom-random);
     }
   }
 
