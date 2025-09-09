@@ -1,6 +1,14 @@
 <template>
   <view class="message-wrap">
-    <adm-row :isThin="true" :height="width">
+    <adm-row
+      :isThin="true"
+      :height="width"
+      :borderText="borderText"
+      :leftText="leftText"
+      :isRev="isRev"
+      :light="light"
+      :dark="dark"
+    >
       <slot></slot>
     </adm-row>
   </view>
@@ -14,6 +22,31 @@ const props = defineProps({
   isGrop: {
     type: Boolean,
     default: false,
+    required: false,
+  },
+  borderText: {
+    type: String,
+    default: "委員會",
+    required: false,
+  },
+  leftText: {
+    type: String,
+    default: "管理局委員會",
+    required: false,
+  },
+  isRev: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  light: {
+    type: String,
+    default: "#E3B4B8",
+    required: false,
+  },
+  dark: {
+    type: String,
+    default: "#EE3F4D",
     required: false,
   },
 });
