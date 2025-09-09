@@ -1,0 +1,80 @@
+/*--------------------------------- 颜色变量 ---------------------------------*/
+
+/* 主色 */
+$primary-light: #E3B4B8;
+$primary-dark: #EE3F4D;
+
+/* 副色 */
+$secondary-light: #73575C;
+$secondary-dark: #7A7374;
+
+/* 背景色 */
+$bg-color: #36282B;
+$bg-light: #533B40;
+$container-color: #73575C;
+
+/*--------------------------------- 尺寸变量 ---------------------------------*/
+
+/* 文字尺寸 */
+$font-mini: 10.53rpx;
+$font-sm: 28.07rpx;
+$font-base: 42.11rpx;
+$font-md: 63.16rpx;
+$font-lg: 175.44rpx;
+$font-bg: 84.22rpx;
+
+/* 容器尺寸 */
+$width-mini: 15.79rpx;
+$width-base: 70.18rpx;
+$width-lg: 684.21rpx;
+
+$height-mini: 52.63rpx;
+$height-sm: 245.61rpx;
+$height-md: 403.51rpx;
+$height-lg: 561.4rpx;
+
+/*--------------------------------- 距离变量 ---------------------------------*/
+
+/* 行高 */
+$line-mini: 8.77rpx;
+$line-sm: 17.54rpx;
+$line-md: 87.72rpx;
+$line-lg: 140.35rpx;
+
+/* 间距 */
+$pss-spacing: 8.77rpx;
+$grop-spacing: 35.09rpx;
+
+/* 字距 */
+$font-spacing: -3.51rpx;
+
+/*--------------------------------- 字体 ---------------------------------*/
+@font-face {
+  font-family: adm-medium;
+  src: url('static/taisyoKatujippoi7.ttf') format(truetype);
+  font-display: swap;
+}
+
+@font-face {
+  font-family: adm-regular;
+  src: url('static/AaGuDianKeBenSong-2.ttf') format(truetype);
+  font-display: swap;
+}
+
+@font-face {
+  font-family: adm-light;
+  src: url('static/NewTegomin-Regular.ttf') format(truetype);
+  font-display: swap;
+}
+
+@font-face {
+  font-family: adm-bold;
+  src: url('static/WenYue_XHGuYaSong_JRFC.otf') format(opentype);
+  font-display: swap;
+}
+
+@font-face {
+  font-family: adm-thin;
+  src: url('static/WenYue_MinGuoFangSong_F.otf') format(opentype);
+  font-display: swap;
+}
