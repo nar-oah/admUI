@@ -3,11 +3,17 @@
     :isGrop="true"
     :borderText="props.borderText"
     :leftText="props.leftText"
-    :isRev="props.isRev"
+    :isRev="rev"
     :light="props.light"
     :dark="props.dark"
   >
-    <input class="slot" type="text" :placeholder="main" />
+    <input
+      class="slot"
+      type="text"
+      :placeholder="main"
+      @focus="rev = true"
+      @blur="rev = false"
+    />
   </adm-message>
 </template>
 
@@ -47,6 +53,7 @@ const props = defineProps({
   },
 });
 const main = ref<string>(initMain("管理局"));
+const rev = ref<boolean>(props.isRev);
 
 function initMain(defaultMain: string): string {
   const slots = useSlots();

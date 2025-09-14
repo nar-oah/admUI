@@ -65,6 +65,11 @@ const props = defineProps({
     default: 0,
     required: false,
   },
+  width: {
+    type: Number,
+    default: 70.18,
+    required: false,
+  },
 });
 const main = ref<string>(initMain("管理局"));
 const border = computed(() => {
@@ -91,11 +96,13 @@ const inputStyles = computed(() => {
   const wrapHeight = getRpx(item.value.wrap.height);
   const mainHeight = mainUnit * main.value.length;
   const pssHeight: string = mainUnit ? `${mainHeight + wrapHeight}rpx` : "auto";
+  const baseWidth = props.isThin ? 52.63 : 70.18;
   return {
     "--fore-color": props.isRev ? props.light : props.dark,
     "--bg-color": props.isRev ? props.dark : props.light,
-    "--width": `${props.isThin ? 52.63 : 70.18}rpx`,
+    "--width": `${props.width}rpx`,
     "--height": props.height ? `${props.height}rpx` : pssHeight,
+    "--main-offset": `${props.width - baseWidth + 21.05}rpx`,
     "--top-random": `${border.value.topRandom}rpx`,
     "--left-random": `${left.value.random}rpx`,
     "--bottom-random": `${border.value.bottomRandom}rpx`,
@@ -210,7 +217,7 @@ onMounted(() => initItem());
     color: var(--fore-color);
     display: flex;
     flex-direction: row;
-    margin-left: $width-mini + 5.26rpx;
+    margin-left: var(--main-offset);
     height: var(--height);
     width: var(--height);
 

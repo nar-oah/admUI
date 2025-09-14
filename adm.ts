@@ -17,6 +17,10 @@ export interface ItemUnit {
   main: number;
   left: number;
 }
+export interface CollapseInfo {
+  top: number;
+  height: number;
+}
 
 export const screen = ref<ScreenInfo>(initScreen());
 const initWrap: ItemWrap = { width: 0, height: 0 };
@@ -26,6 +30,7 @@ export const item = ref<ItemInfo>({
   wrap: initWrap,
   unit: initUnit,
 });
+export const collapseOpen = ref<CollapseInfo[]>([]);
 
 function initScreen(): ScreenInfo {
   const systemInfo = uni.getSystemInfoSync();
