@@ -6,6 +6,7 @@
     :isRev="rev"
     :light="props.light"
     :dark="props.dark"
+    :height="52.63"
   >
     <input
       class="slot"
