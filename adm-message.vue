@@ -10,7 +10,7 @@
       :dark="dark"
       :width="height"
     >
-      <slot></slot>
+      <slot>信息</slot>
     </adm-row>
   </view>
 </template>
