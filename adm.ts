@@ -30,7 +30,6 @@ export const item = ref<ItemInfo>({
   wrap: initWrap,
   unit: initUnit,
 });
-export let fill = 0;
 export const collapseOpen = ref<CollapseInfo[]>([]);
 
 function initScreen(): ScreenInfo {

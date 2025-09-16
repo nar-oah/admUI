@@ -1,99 +1,94 @@
 <template>
-	<view id="fillWrap" :class="[isRow ? 'wrap row' : 'wrap']">
-		<slot></slot>
-		<view class="fill">
-			<text id="fillText" class="text" :style="{'margin-top':`-${fill.random[0]}rpx`}">
-				{{fillText.repeat(fill.repeat)}}
-			</text>
-		</view>
-	</view>
+  <view id="fillWrap" class="wrap" :style="fillStyle">
+    <slot></slot>
+    <view class="fill">
+      <text id="fillText" class="text">
+        {{ fillText.repeat(repeat) }}
+      </text>
+    </view>
+  </view>
 </template>
 
-<script lang="ts">
-	import adm from "../sdk/adm"
-	export default {
-		name: "admFill",
-		props: {
-			isRow: {
-				type: Boolean,
-				default: false,
-				required: false
-			},
-			fillText: {
-				type: String,
-				default: '委員會',
-				required: false
-			},
-			height: {
-				type: Number,
-				default: 0,
-				required: false
-			}
-		},
-		data() {
-			return {
-				fill: {
-          bottom: 0,
-					height: 0,
-					repeat: 1,
-					random: [0]
-				},
-			};
-		},
-		async mounted() {
-			await this.$nextTick()
-			adm.getScreendata()
-			this.initDom()
-			this.getFill()
-		},
-		methods: {
-			initDom() {
-        const query = uni.createSelectorQuery().in(this)
-				if (!adm.fill) {
-          query.select('#fillText').boundingClientRect((textRect : any) => {
-            adm.fill = adm.px2rpx(this.isRow ? textRect.width : textRect.height)
-          }).exec()
-				}
-        query.select('#fillWrap').boundingClientRect((fillRect : any) => {
-          this.fill.bottom = this.isRow ? fillRect.width : fillRect.height 
-        }).exec()
-			},
-			getFill() {
-        const screenHeight = this.isRow ? adm.screenData.width : adm.screenData.height
-        const height = this.height ? this.height - this.fill.bottom : screenHeight - this.fill.bottom
+<script setup lang="ts">
+import { getCurrentInstance, defineProps, onMounted, ref, computed } from "vue";
+import { screen, getRandom, getRpx } from "./adm";
+const props = defineProps({
+  isRow: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  fillText: {
+    type: String,
+    default: "委員會",
+    required: false,
+  },
+  height: {
+    type: Number,
+    default: 0,
+    required: false,
+  },
+});
+const componentInstance = getCurrentInstance();
+const bottom = ref(0);
+const text = ref(0);
+const screenHeight = computed(() =>
+  props.isRow ? screen.value.width : screen.value.height,
+);
+const repeat = computed(() => {
+  const height = screenHeight.value - bottom.value;
+  const total = getRpx(height <= 0 ? 50 - height : height);
+  return text.value ? Math.ceil(total / text.value) + 1 : 1;
+});
+const fillStyle = computed(() => {
+  return {
+    "--height": `${getRpx(screenHeight.value)}rpx`,
+    "--random": `-${getRandom(0, text.value)}rpx`,
+    "--deg": `${props.isRow ? -90 : 0}deg`,
+  };
+});
 
-				//若item已填满整页，则仅象征性增加一小段fill空间
-				this.fill.height = adm.px2rpx(height <= 0 ? 50 : height)
-				this.fill.random = adm.getRandom(1, 0, adm.fill)
-				this.fill.repeat = Math.ceil(this.fill.height / adm.fill) + 1
-			}
-		}
-	}
+function initFill() {
+  const query = uni.createSelectorQuery().in(componentInstance);
+  query.select("#fillText").boundingClientRect();
+  query.select("#fillWrap").boundingClientRect();
+  query.exec((res) => {
+    const [textRect, fillRect] = res;
+    text.value = getRpx(props.isRow ? textRect.width : textRect.height);
+    bottom.value = fillRect.top;
+  });
+}
+onMounted(() => {
+  initFill();
+});
 </script>
 
-<style lang="scss">
-	.wrap {
-		width: $adm-pss-width-base;
-		background-color: $adm-primary-light;
-	}
+<style scoped lang="scss">
+@import "./adm.scss";
+.wrap {
+  height: var(--height);
+  width: $width-base;
+  background-color: $primary-light;
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+  transform: rotate(var(--deg));
+  transform-origin: calc($width-base / 2) calc($width-base / 2);
 
-	.row {
-		transform: rotate(-90deg);
-		transform-origin: math.div($adm-pss-width-base, 2) math.div($adm-pss-width-base, 2);
-	}
+  .fill {
+    width: $width-base - $font-spacing;
+    margin-left: $font-spacing;
 
-	.fill {
-		width: $adm-pss-width-base - $adm-font-spacing-fill;
-		margin-left: $adm-font-spacing-fill;
-
-		.text {
+    .text {
       display: flex;
       overflow: hidden;
-			color: $adm-primary-dark;
+      color: $primary-dark;
       font-family: pss-main;
-			font-size: $adm-font-size-sm;
-			letter-spacing: $adm-font-spacing-fill;
-			line-height: $adm-font-height-sm;
-		}
-	}
+      font-size: $font-sm;
+      letter-spacing: $font-spacing;
+      line-height: $line-sm;
+      margin-top: var(--random);
+    }
+  }
+}
 </style>
