@@ -7,9 +7,8 @@
     :style="{ maxHeight: `${height}rpx` }"
     :height="height"
     :isRev="isOpen"
-    @click="handleOpen()"
   >
-    <view>{{ title }}</view>
+    <view @click="handleOpen()">{{ title }}</view>
     <view id="open" class="open" v-show="isOpen">
       <slot></slot>
     </view>
@@ -50,7 +49,6 @@ function handleOpen() {
   isOpen.value = !isOpen.value;
 }
 function initCollapse() {
-  //INFO: 若高度获取存在问题考虑加入nextTick
   const query = uni.createSelectorQuery().in(componentInstance);
   query.select("#collapse").boundingClientRect();
   query.select("#open").boundingClientRect();
