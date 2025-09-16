@@ -12,7 +12,7 @@ const props = defineProps({
     required: true,
     validator: (value: string) => value.length == 1,
   },
-  isSelected: {
+  isRev: {
     type: Boolean,
     default: false,
     required: false,
@@ -69,7 +69,12 @@ const buttonStyles = computed(() => {
   font-family: var(--type);
 }
 
-.adm-button:hover {
+.adm-button[disabled] {
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+.adm-button:hover:not([disabled]) {
   filter: brightness(110%);
 }
 

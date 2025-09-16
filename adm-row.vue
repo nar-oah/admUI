@@ -76,7 +76,7 @@ const border = computed(() => {
   const borderWidth = item.value.unit.border * (props.borderText.length + 0.5);
   return {
     text: props.borderText + "-",
-    repeat: Math.ceil(item.value.wrap.width / borderWidth) + 1,
+    repeat: Math.ceil(getPx(props.width) / borderWidth) + 1,
     topRandom: getRandom(-borderWidth, 0),
     bottomRandom: getRandom(-borderWidth, 0),
   };
