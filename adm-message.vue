@@ -55,6 +55,11 @@ const props = defineProps({
     default: 52.63,
     required: false,
   },
+  offset: {
+    type: Number,
+    default: 0,
+    required: false,
+  },
 });
 const width = computed(() =>
   props.isGrop ? 684.21 : getRpx(screen.value.width),
@@ -62,6 +67,7 @@ const width = computed(() =>
 const messageStyles = computed(() => {
   return {
     "--height": `${props.height}rpx`,
+    "--offset": `${props.offset}rpx`,
     "--origin": `${props.height / 2}rpx`,
   };
 });
@@ -70,9 +76,11 @@ const messageStyles = computed(() => {
 <style scoped lang="scss">
 @import "./adm.scss";
 .message-wrap {
+  /* position: absolute; */
   transform: rotate(-90deg);
   transform-origin: var(--origin) var(--origin);
   height: var(--height);
   width: var(--height);
+  /* top: var(--offset); */
 }
 </style>

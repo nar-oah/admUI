@@ -82,7 +82,7 @@ const buttonStyles = computed(() => {
   box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
 }
 
-.adm-button:active {
+.adm-button:active:not([disabled]) {
   transform: scale(0.95);
 }
 </style>
