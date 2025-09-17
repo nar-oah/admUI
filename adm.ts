@@ -1,4 +1,4 @@
-import { ref } from "vue";
+import { computed, ref } from "vue";
 interface ScreenInfo {
   height: number;
   width: number;
@@ -17,7 +17,8 @@ export interface ItemUnit {
   main: number;
   left: number;
 }
-export interface CollapseInfo {
+export interface SealInfo {
+  icon: string;
   top: number;
   height: number;
 }
@@ -30,8 +31,18 @@ export const item = ref<ItemInfo>({
   wrap: initWrap,
   unit: initUnit,
 });
-export const collapseOpen = ref<CollapseInfo[]>([]);
-export const gropSeal = ref<CollapseInfo[]>([]);
+export const openSeal = ref<SealInfo[]>([]);
+export const gropSeal = ref<SealInfo[]>([]);
+export const sealHeight = ref(0);
+export const endSeal = computed({
+  get() {
+    const height = screen.value.height - sealHeight.value;
+    return height <= 0 ? sealHeight.value + 50 : screen.value.height;
+  },
+  set(value) {
+    sealHeight.value = value > sealHeight.value ? value : sealHeight.value;
+  },
+});
 
 function initScreen(): ScreenInfo {
   const systemInfo = uni.getSystemInfoSync();

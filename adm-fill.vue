@@ -38,8 +38,8 @@ const total = computed(() => {
   const height = props.height || screenHeight.value - bottom.value;
   return getRpx(height <= 0 ? 50 - height : height);
 });
-const text = ref(total.value * 2);
-const repeat = computed(() => Math.trunc(total.value / text.value) + 1 || 1);
+const text = ref(total.value);
+const repeat = computed(() => Math.ceil(total.value / text.value) + 1);
 const fillStyle = computed(() => {
   return {
     "--height": `${total.value}rpx`,
@@ -54,7 +54,8 @@ function initFill() {
   query.select("#fillWrap").boundingClientRect();
   query.exec((res) => {
     const [textRect, fillRect] = res;
-    text.value = getRpx(props.isRow ? textRect.width : textRect.height);
+    const direction = props.isRow ? textRect.width : textRect.height;
+    text.value = getRpx(direction) / repeat.value;
     bottom.value = fillRect.top;
   });
 }

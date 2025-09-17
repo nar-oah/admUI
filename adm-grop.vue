@@ -9,7 +9,7 @@
       :style="{ position: 'absolute', left: `${pssHeight * index}rpx` }"
       :height="rangeHeight * props.row.length"
       :isRev="true"
-      @click="handleClick(index)"
+      @click="emit('click', index)"
     >
       {{ item }}
     </adm-column>
@@ -25,8 +25,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, getCurrentInstance, onMounted } from "vue";
-import { getRandom, getRpx, gropSeal } from "./adm";
+import { computed, getCurrentInstance, onMounted, useSlots } from "vue";
+import { endSeal, getRandom, getRpx, gropSeal } from "./adm";
 const props = defineProps({
   isRandom: {
     type: Boolean,
@@ -87,14 +87,19 @@ function initCollapse() {
   query.select("#gropContainer").boundingClientRect();
   query.exec((res) => {
     const [containerRect] = res;
+    endSeal.value = containerRect.bottom;
     gropSeal.value.push({
+      icon: initIcon("密封"),
       top: getRpx(containerRect.top),
       height: rangeHeight.value * props.row.length,
     });
   });
 }
-function handleClick(index: number) {
-  emit("click", index);
+function initIcon(defaultMain: string): string {
+  const slots = useSlots();
+  const vnodes = slots.default ? slots.default() : [{ children: defaultMain }];
+  const children = vnodes[0].children;
+  return typeof children === "string" ? children : defaultMain;
 }
 onMounted(() => initCollapse());
 </script>

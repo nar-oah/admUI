@@ -17,8 +17,8 @@
 
 <script setup lang="ts">
 import { ref, onMounted, getCurrentInstance, computed } from "vue";
-import { collapseOpen, getRpx } from "./adm";
-import type { CollapseInfo } from "./adm";
+import { openSeal, getRpx, endSeal } from "./adm";
+import type { SealInfo } from "./adm";
 
 const props = defineProps({
   title: {
@@ -37,14 +37,14 @@ const openHeight = ref(collapseHeight);
 const height = computed(() =>
   isOpen.value ? openHeight.value : collapseHeight,
 );
-let info: CollapseInfo = { top: 0, height: 0 };
+let info: SealInfo = { icon: "展开", top: 0, height: 0 };
 
 function handleOpen() {
   if (!isOpen.value) {
-    collapseOpen.value.push(info);
+    openSeal.value.push(info);
   } else {
-    const id = collapseOpen.value.indexOf(info);
-    collapseOpen.value.splice(id, 1);
+    const id = openSeal.value.indexOf(info);
+    openSeal.value.splice(id, 1);
   }
   isOpen.value = !isOpen.value;
 }
@@ -61,6 +61,7 @@ function initCollapse() {
     info.top = getRpx(collapseRect.top);
     info.height = isMin ? minHeight - collapseHeight : getRpx(openRect.height);
     isOpen.value = props.isOpen;
+    endSeal.value = collapseRect.bottom;
   });
 }
 onMounted(() => initCollapse());

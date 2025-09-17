@@ -2,26 +2,36 @@
   <view class="list-wrap">
     <adm-fill style="position: absolute" :height="fillHeight"></adm-fill>
     <adm-icons
-      v-for="item in openList"
+      v-for="item in list"
       :isPss="true"
       :height="item.height"
       :style="{ position: 'absolute', top: `${item.top}rpx` }"
+      :isRandom="props.isRandom"
     >
       {{ item.icon }}
     </adm-icons>
   </view>
-  <slot></slot>
+  <view class="slot">
+    <slot></slot>
+  </view>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import { endSeal, openSeal, screen } from "./adm";
+import { endSeal, openSeal, gropSeal, screen, sealHeight } from "./adm";
 import type { SealInfo } from "./adm";
 
+const props = defineProps({
+  isRandom: {
+    type: Boolean,
+    default: true,
+    required: false,
+  },
+});
 const stageHeight = ref(0);
 const fillHeight = computed(() => {
-  const height = endSeal.value + stageHeight.value;
-  return endSeal.value > screen.value.height ? height : endSeal.value;
+  const height = sealHeight.value + stageHeight.value;
+  return height > screen.value.height ? height : endSeal.value;
 });
 const openList = computed((): SealInfo[] => {
   const sortList = openSeal.value.toSorted((a, b) => a.top - b.top);
@@ -35,6 +45,16 @@ const openList = computed((): SealInfo[] => {
   stageHeight.value = cumulativeTop;
   return list;
 });
+const gropList = computed((): SealInfo[] => {
+  return gropSeal.value.map((item) => {
+    return {
+      icon: item.icon,
+      top: item.top - 35.09,
+      height: item.height + 35.09,
+    };
+  });
+});
+const list = computed((): SealInfo[] => [...openList.value, ...gropList.value]);
 </script>
 
 <style scoped lang="scss">
@@ -47,5 +67,9 @@ const openList = computed((): SealInfo[] => {
   top: 0;
   right: 0;
   width: $line-lg * 2;
+}
+.slot {
+  position: absolute;
+  z-index: 0;
 }
 </style>
