@@ -31,18 +31,18 @@ const props = defineProps({
 });
 const componentInstance = getCurrentInstance();
 const bottom = ref(0);
-const text = ref(0);
 const screenHeight = computed(() =>
   props.isRow ? screen.value.width : screen.value.height,
 );
-const repeat = computed(() => {
+const total = computed(() => {
   const height = props.height || screenHeight.value - bottom.value;
-  const total = getRpx(height <= 0 ? 50 - height : height);
-  return text.value ? Math.ceil(total / text.value) + 1 : 1;
+  return getRpx(height <= 0 ? 50 - height : height);
 });
+const text = ref(total.value * 2);
+const repeat = computed(() => Math.trunc(total.value / text.value) + 1 || 1);
 const fillStyle = computed(() => {
   return {
-    "--height": `${getRpx(screenHeight.value)}rpx`,
+    "--height": `${total.value}rpx`,
     "--random": `-${getRandom(0, text.value)}rpx`,
     "--deg": `${props.isRow ? -90 : 0}deg`,
   };
