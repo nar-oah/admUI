@@ -36,7 +36,7 @@ const screenHeight = computed(() =>
   props.isRow ? screen.value.width : screen.value.height,
 );
 const repeat = computed(() => {
-  const height = screenHeight.value - bottom.value;
+  const height = props.height || screenHeight.value - bottom.value;
   const total = getRpx(height <= 0 ? 50 - height : height);
   return text.value ? Math.ceil(total / text.value) + 1 : 1;
 });

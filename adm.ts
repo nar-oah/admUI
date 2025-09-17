@@ -31,6 +31,7 @@ export const item = ref<ItemInfo>({
   unit: initUnit,
 });
 export const collapseOpen = ref<CollapseInfo[]>([]);
+export const gropSeal = ref<CollapseInfo[]>([]);
 
 function initScreen(): ScreenInfo {
   const systemInfo = uni.getSystemInfoSync();

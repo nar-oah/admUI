@@ -40,6 +40,7 @@ const openList = computed(() => {
   justify-content: center;
   position: absolute;
   z-index: 1;
+  top: 0;
   right: 0;
   width: $line-lg * 2;
 }
