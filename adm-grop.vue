@@ -62,7 +62,7 @@ const componentInstance = getCurrentInstance();
 const emit = defineEmits(["click"]);
 const pssHeight = 52.63;
 const rangeHeight = computed(() => {
-  const height = props.height / props.row.length || pssHeight * 2.2;
+  const height = props.height / props.row.length || pssHeight * 1.9;
   const minHeight = props.min / props.row.length;
   return minHeight > height ? minHeight : height;
 });
@@ -100,11 +100,12 @@ onMounted(() => initCollapse());
 </script>
 
 <style scoped lang="scss">
+@import "./adm.scss";
 .container {
   position: relative;
-  width: $adm-container-width;
+  width: $width-lg;
   height: var(--height);
-  background-color: $adm-container-color;
+  background-color: $container-color;
   overflow: hidden;
 }
 </style>
