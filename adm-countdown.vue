@@ -1,5 +1,8 @@
 <template>
-  <text> {{ info.hour }}時{{ info.minutes }}分{{ info.seconds }}秒 </text>
+  <text>
+    {{ info.hour }}時{{ info.minutes }}分{{ info.seconds }}秒
+    <slot></slot>
+  </text>
 </template>
 
 <script setup lang="ts">

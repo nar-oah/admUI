@@ -7,7 +7,7 @@
       v-for="(item, index) in column"
       :key="index"
       :style="{ position: 'absolute', left: `${pssHeight * index}rpx` }"
-      :height="rangeHeight * props.row.length"
+      :height="rangeHeight * messageNum"
       :isRev="true"
       @click="emit('click', index)"
     >
@@ -20,6 +20,14 @@
       :isGrop="true"
     >
       {{ item }}
+    </adm-message>
+    <adm-message
+      v-for="(node, index) in slotNodes"
+      :key="index"
+      :style="{ position: 'absolute', top: `${random[index]}rpx` }"
+      :isGrop="true"
+    >
+      <component :is="node"></component>
     </adm-message>
   </view>
 </template>
@@ -49,7 +57,13 @@ const props = defineProps({
   },
   row: {
     type: Array,
-    required: true,
+    default: [],
+    required: false,
+  },
+  icon: {
+    type: String,
+    default: "密封",
+    required: false,
   },
   background: {
     type: String,
@@ -61,16 +75,21 @@ const props = defineProps({
 const componentInstance = getCurrentInstance();
 const emit = defineEmits(["click"]);
 const pssHeight = 52.63;
+const slotNodes = computed(() => {
+  const slots = useSlots();
+  return slots.default ? slots.default() : [];
+});
+const messageNum = computed(() => slotNodes.value.length ?? props.row.length);
 const rangeHeight = computed(() => {
-  const height = props.height / props.row.length || pssHeight * 1.9;
-  const minHeight = props.min / props.row.length;
+  const height = props.height / messageNum.value || pssHeight * 1.9;
+  const minHeight = props.min / messageNum.value;
   return minHeight > height ? minHeight : height;
 });
 const containerStyle = computed(() => {
-  return { "--height": `${rangeHeight.value * props.row.length}rpx` };
+  return { "--height": `${rangeHeight.value * messageNum.value}rpx` };
 });
 const random = computed(() => {
-  const offRandom = Array.from({ length: props.row.length }, () =>
+  const offRandom = Array.from({ length: messageNum.value }, () =>
     props.isRandom ? getRandom(0, rangeHeight.value - pssHeight) : 0,
   );
   let preRandom = 0;
@@ -89,17 +108,11 @@ function initCollapse() {
     const [containerRect] = res;
     endSeal.value = containerRect.bottom;
     gropSeal.value.push({
-      icon: initIcon("密封"),
+      icon: props.icon,
       top: getRpx(containerRect.top),
-      height: rangeHeight.value * props.row.length,
+      height: rangeHeight.value * messageNum.value,
     });
   });
-}
-function initIcon(defaultMain: string): string {
-  const slots = useSlots();
-  const vnodes = slots.default ? slots.default() : [{ children: defaultMain }];
-  const children = vnodes[0].children;
-  return typeof children === "string" ? children : defaultMain;
 }
 onMounted(() => initCollapse());
 </script>
