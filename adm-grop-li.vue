@@ -9,7 +9,6 @@
 .grop-li {
   display: flex;
   flex-direction: column;
-  align-items: center;
   margin: $grop-spacing;
   gap: $grop-spacing;
 }

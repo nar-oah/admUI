@@ -67,7 +67,7 @@ export default {
     transform: rotate(-90deg);
     transform-origin: right bottom;
     right: 0;
-    bottom: $line-lg + math.div($width-base, 2);
+    bottom: $line-lg + $width-base/ 2;
     z-index: 1;
   }
 

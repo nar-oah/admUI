@@ -84,7 +84,7 @@ onMounted(() => {
       display: flex;
       overflow: hidden;
       color: $primary-dark;
-      font-family: pss-main;
+      font-family: adm-medium;
       font-size: $font-sm;
       letter-spacing: $font-spacing;
       line-height: $line-sm;

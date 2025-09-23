@@ -70,6 +70,7 @@ const iconsStyles = computed(() => {
   justify-content: center;
   align-items: center;
   width: $line-lg * 2;
+  overflow: hidden;
 
   .text {
     display: flex;
@@ -77,7 +78,7 @@ const iconsStyles = computed(() => {
     align-items: center;
     width: $font-lg;
     height: var(--height);
-    font-family: adm-icon;
+    font-family: adm-bold;
     font-size: $font-lg;
     line-height: $line-lg;
     color: var(--color);

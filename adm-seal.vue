@@ -34,7 +34,7 @@ const fillHeight = computed(() => {
   return height > screen.value.height ? height : endSeal.value;
 });
 const openList = computed((): SealInfo[] => {
-  const sortList = openSeal.value.toSorted((a, b) => a.top - b.top);
+  const sortList = openSeal.value.slice().sort((a, b) => a.top - b.top);
   let cumulativeTop = 0;
   const list = sortList.map((item) => {
     const top = item.top + cumulativeTop;

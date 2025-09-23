@@ -19,7 +19,7 @@ const props = defineProps({
   },
   buttonType: {
     type: String,
-    default: "icon",
+    default: "bold",
     required: false,
   },
   light: {
@@ -34,7 +34,7 @@ const props = defineProps({
   },
   size: {
     type: Number,
-    default: 20,
+    default: 26,
     required: false,
   },
 });

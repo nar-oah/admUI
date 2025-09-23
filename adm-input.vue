@@ -1,21 +1,11 @@
 <template>
-  <adm-message
-    :isGrop="true"
-    :borderText="props.borderText"
-    :leftText="props.leftText"
-    :isRev="rev"
-    :light="props.light"
-    :dark="props.dark"
-    :height="52.63"
-  >
-    <input
-      class="slot"
-      type="text"
-      :placeholder="main"
-      @focus="rev = true"
-      @blur="rev = false"
-    />
-  </adm-message>
+  <input
+    class="slot"
+    type="text"
+    :placeholder="main"
+    @focus="rev = true"
+    @blur="rev = false"
+  />
 </template>
 
 <script setup lang="ts">

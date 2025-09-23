@@ -2,9 +2,10 @@
   <adm-todo
     v-for="(item, index) in list"
     :key="index"
+    :isComplete="item.isComplete"
     @change="handleChange(index, $event)"
   >
-    {{ item.content }}
+    {{ item.context }}
   </adm-todo>
 </template>
 
@@ -13,7 +14,7 @@ import { defineProps, ref } from "vue";
 import type { PropType } from "vue";
 interface TodoList {
   isComplete: boolean;
-  content: string;
+  context: string;
 }
 
 const props = defineProps({
@@ -22,11 +23,11 @@ const props = defineProps({
     required: true,
   },
 });
-const emit = defineEmits(["update:list"]);
+const emit = defineEmits(["change"]);
 const list = ref<TodoList[]>(props.list);
 
 function handleChange(index: number, complete: boolean) {
   list.value[index].isComplete = complete;
-  emit("update:list", list.value);
+  emit("change", list.value);
 }
 </script>

@@ -21,7 +21,7 @@ const props = defineProps({
   },
 });
 let timer = 0;
-const emit = defineEmits(["finsh"]);
+const emit = defineEmits(["finish"]);
 const remaining = ref<number>(props.targetTime.getTime() - Date.now());
 const info: ComputedRef<Remaining> = computed(() => {
   const seconds = 1000 * 60;
@@ -39,7 +39,7 @@ function updateTime() {
   if (props.targetTime.getTime() <= current) {
     clearInterval(timer);
     remaining.value = 0;
-    emit("finsh");
+    emit("finish");
   } else {
     remaining.value = props.targetTime.getTime() - Date.now();
   }

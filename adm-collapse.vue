@@ -4,19 +4,18 @@
     light="#E3B4B8"
     dark="#73575C"
     class="collapse"
-    :style="{ maxHeight: `${height}rpx` }"
     :height="height"
     :isRev="isOpen"
   >
     <view @click="handleOpen()">{{ title }}</view>
     <view id="open" class="open" v-show="isOpen">
-      <slot></slot>
+      <slot v-if="isLoad"></slot>
     </view>
   </adm-message>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, getCurrentInstance, computed } from "vue";
+import { ref, getCurrentInstance, computed, nextTick, onUpdated } from "vue";
 import { openSeal, getRpx, endSeal } from "./adm";
 import type { SealInfo } from "./adm";
 
@@ -32,23 +31,26 @@ const props = defineProps({
 });
 const componentInstance = getCurrentInstance();
 const collapseHeight = 52.63;
-const isOpen = ref(true);
+const isOpen = ref(props.isOpen);
+const isLoad = ref(false);
 const openHeight = ref(collapseHeight);
 const height = computed(() =>
   isOpen.value ? openHeight.value : collapseHeight,
 );
 let info: SealInfo = { icon: "展开", top: 0, height: 0 };
 
-function handleOpen() {
-  if (!isOpen.value) {
+async function handleOpen() {
+  isOpen.value = !isOpen.value;
+  if (isOpen.value) {
+    info.height == 0 && (await initCollapse());
     openSeal.value.push(info);
   } else {
     const id = openSeal.value.indexOf(info);
     openSeal.value.splice(id, 1);
   }
-  isOpen.value = !isOpen.value;
 }
-function initCollapse() {
+async function initCollapse() {
+  await nextTick();
   const query = uni.createSelectorQuery().in(componentInstance);
   query.select("#collapse").boundingClientRect();
   query.select("#open").boundingClientRect();
@@ -60,17 +62,16 @@ function initCollapse() {
     openHeight.value = isMin ? minHeight : totalHeight;
     info.top = getRpx(collapseRect.top);
     info.height = isMin ? minHeight - collapseHeight : getRpx(openRect.height);
-    isOpen.value = props.isOpen;
     endSeal.value = collapseRect.bottom;
   });
 }
-onMounted(() => initCollapse());
+onUpdated(() => (isLoad.value = true));
 </script>
 
 <style scoped lang="scss">
 .collapse {
-  transition: max-height 0.3s ease-out;
-  will-change: max-height;
+  /* transition: max-height 0.3s ease-out; */
+  /* will-change: max-height; */
   .open {
     position: absolute;
     top: 52.63rpx;

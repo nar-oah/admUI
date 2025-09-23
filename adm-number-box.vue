@@ -10,7 +10,7 @@
       class="number"
       type="digit"
       :value="placeholder"
-      :placeholder="placeholder"
+      :placeholder="placeholder.toString()"
       placeholder-style="color: var(--fore-color)"
       @blur="handleConfirm($event.detail)"
     />
@@ -69,12 +69,13 @@ const props = defineProps({
     required: false,
   },
 });
+const emit = defineEmits(["change"]);
 const number = ref(props.value);
 const isMin = ref<boolean>(false);
 const isMax = ref<boolean>(false);
 const placeholder = computed({
   get() {
-    return number.value.toString();
+    return number.value;
   },
   set(value: number) {
     let stage = value;
@@ -89,12 +90,13 @@ const placeholder = computed({
       stage = props.min;
     }
     number.value = stage;
+    emit("change", stage);
   },
 });
 const numberStyle = computed(() => {
   const height = 32.63;
   return {
-    "--width": `${21 * placeholder.value.length}rpx`,
+    "--width": `${21 * placeholder.value.toString().length}rpx`,
     "--add-top": `${getRandom(0, height)}rpx`,
     "--add-deg": `${getRandom(-90, 90)}deg`,
     "--reduce-top": `${getRandom(0, height)}rpx`,
@@ -106,10 +108,12 @@ function handleConfirm(detail: any) {
   placeholder.value = Number(detail.value);
 }
 function handleAdd() {
-  placeholder.value = number.value + props.step;
+  const addNum = (number.value + props.step).toFixed(2);
+  placeholder.value = parseFloat(addNum);
 }
 function handleReduce() {
-  placeholder.value = number.value - props.step;
+  const reduceNum = (number.value - props.step).toFixed(2);
+  placeholder.value = parseFloat(reduceNum);
 }
 </script>
 

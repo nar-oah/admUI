@@ -1,8 +1,8 @@
 <template>
   <view id="gropContainer" class="container" :style="containerStyle">
-    <adm-background :is-thin="true" :is-rev="true">
-      {{ background }}
-    </adm-background>
+    <!-- <adm-background :is-thin="true" :is-rev="true"> -->
+    <!--   {{ background }} -->
+    <!-- </adm-background> -->
     <adm-column
       v-for="(item, index) in column"
       :key="index"
@@ -23,7 +23,7 @@
     </adm-message>
     <adm-message
       v-for="(node, index) in slotNodes"
-      :key="index"
+      :key="node"
       :style="{ position: 'absolute', top: `${random[index]}rpx` }"
       :isGrop="true"
     >
@@ -75,9 +75,12 @@ const props = defineProps({
 const componentInstance = getCurrentInstance();
 const emit = defineEmits(["click"]);
 const pssHeight = 52.63;
+const slots = useSlots();
 const slotNodes = computed(() => {
-  const slots = useSlots();
-  return slots.default ? slots.default() : [];
+  const slotArr = slots.default ? slots.default() : [];
+  return slotArr.filter(
+    (item) => typeof item.type === "object" || typeof item.type === "string",
+  );
 });
 const messageNum = computed(() => slotNodes.value.length ?? props.row.length);
 const rangeHeight = computed(() => {

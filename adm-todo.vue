@@ -48,12 +48,12 @@ const props = defineProps({
   },
   light: {
     type: String,
-    default: "#E3B4B8",
+    default: "#73575C",
     required: false,
   },
   dark: {
     type: String,
-    default: "#73575C",
+    default: "#E3B4B8",
     required: false,
   },
 });
@@ -66,8 +66,8 @@ const todoStyles = computed(() => {
   const textWidth = item.value.wrap.height * main.value.length;
   return {
     "--complete-line": isComplete.value ? "line-through" : "none",
-    "--seal-top": `-${getRandom(0, pssHeight)}rpx`,
-    "--seal-left": `${getRandom(textWidth - item.value.wrap.height, textWidth)}rpx`,
+    "--seal-top": `${getRandom(0, pssHeight)}rpx`,
+    "--seal-left": `${getRandom(200, 250)}rpx`,
     "--seal-deg": `${getRandom(-90, 90)}deg`,
   };
 });
@@ -94,7 +94,7 @@ function handleTodo() {
   }
   .seal {
     position: absolute;
-    margin-top: var(--seal-top);
+    top: var(--seal-top);
     left: var(--seal-left);
     transform: rotate(var(--seal-deg));
   }
