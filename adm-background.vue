@@ -1,79 +1,74 @@
 <template>
-  <view class="background-wrap"
-  :style="{'transform': `rotate(${position.deg}deg)`, 'margin-top':`-${position.top}rpx`, 'margin-left':`-${position.left}rpx`}">
-    <view id="backgroundText" :class="[`${font} ${theme}`]">
-       <slot></slot>
+  <view class="background-wrap" :style="backgroundStyles">
+    <view class="text">
+      <slot></slot>
     </view>
   </view>
 </template>
 
-<script lang="ts">
-  import adm from '../sdk/adm';
-  export default {
-    name:"admBackground",
-    props: {
-			isRev: {
-				type: Boolean,
-				default: false,
-				required: false
-			},
-			isThin: {
-				type: Boolean,
-				default: false,
-				required: false
-			},
-			minRan: {
-				type: Number,
-				default: -10,
-				required: false
-			},
-			maxRan: {
-				type: Number,
-				default: 10,
-				required: false
-			}
-    },
-    data() {
-      return {
-        theme: this.isRev ? 'dark' : 'light',
-        font: this.isThin ? 'thin' : 'normal',
-        position: {
-          deg: adm.getRandom(1, this.minRan, this.maxRan),
-          // TODO: 将20改为经dom计算的数值
-          top: adm.getRandom(1, 0, 20),
-          left: adm.getRandom(1, 0, 20)
-        }
-      };
-    }
-  }
+<script setup lang="ts">
+import { computed } from "vue";
+import { getRandom } from "./adm";
+
+const props = defineProps({
+  isRev: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  isThin: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  minRan: {
+    type: Number,
+    default: -10,
+    required: false,
+  },
+  maxRan: {
+    type: Number,
+    default: 10,
+    required: false,
+  },
+  light: {
+    type: String,
+    default: "#533B40",
+    required: false,
+  },
+  dark: {
+    type: String,
+    default: "#36282B",
+    required: false,
+  },
+});
+const backgroundStyles = computed(() => {
+  return {
+    "--wrap-deg": `${getRandom(props.minRan, props.maxRan)}deg`,
+    "--wrap-top": `${getRandom(0, 20)}rpx`,
+    "--wrap-left": `${getRandom(0, 20)}rpx`,
+    "--text-font": props.isThin ? "adm-thin" : "adm-blod",
+    "--text-size": `${props.isThin ? 63.16 : 84.22}rpx`,
+    "--text-color": props.isRev ? props.dark : props.light,
+  };
+});
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+@import "./adm.scss";
 .background-wrap {
   position: absolute;
-  /* z-index: 0; */
-  height: 100%;
+  height: 120%;
   width: 120%;
+  transform: rotate(var(--wrap-deg));
+  margin-top: var(--wrap-top);
+  margin-left: var(--wrap-left);
   overflow: hidden;
 
-  .normal {
-    font-family: adm-icon;
-    font-size: $adm-font-size-bg;
-  }
-
-  .thin {
-    font-family: adm-thin;
-    font-size: $adm-font-size-md;
-    letter-spacing: 17.545rpx;
-    line-height: 70.18rpx;
-  }
-
-  .light {
-    color: $adm-bg-light;
-  }
-
-  .dark{
-    color: $adm-bg-color;
+  .text {
+    font-family: var(--text-font);
+    font-size: var(--text-size);
+    color: var(--text-color);
   }
 }
 </style>
