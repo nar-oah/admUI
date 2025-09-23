@@ -1,12 +1,15 @@
 <template>
   <view class="bottom-wrap">
-    <adm-column class="pss" :height="width">{{ pssText }}</adm-column>
-    <view v-for="(item, index) in bottomArr" :key="index" class="bottom">
+    <adm-column class="pss" :height="width">{{ props.pssText }}</adm-column>
+    <view class="bottom">
       <adm-icons
+        style="width: 175.44rpx"
+        v-for="(item, index) in props.bottomArr"
+        :key="index"
         :is-row="false"
         :is-random="false"
-        :is-select="current == index"
-        @click="inClick(index)"
+        :is-select="props.current == index"
+        @click="emit('click', index)"
       >
         {{ item }}
       </adm-icons>
@@ -14,67 +17,50 @@
   </view>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { ref } from "vue";
 import { getRpx, screen } from "./adm";
-export default {
-  name: "admBottom",
-  emits: ["clickItem"],
-  props: {
-    pssText: {
-      type: String,
-      default: "管理局",
-      required: false,
-    },
-    bottomArr: {
-      type: Array,
-      required: true,
-    },
-    current: {
-      type: Number,
-      default: 0,
-      required: false,
-    },
+
+const emit = defineEmits(["click"]);
+const props = defineProps({
+  pssText: {
+    type: String,
+    default: "管理局",
+    required: false,
   },
-  data() {
-    return {
-      width: getRpx(screen.value.width),
-      pss: "",
-    };
+  bottomArr: {
+    type: Array,
+    required: true,
   },
-  async beforeCreate() {
-    //等item初始化完成后再旋转
-    await this.$nextTick();
-    this.pss = "pss";
+  current: {
+    type: Number,
+    default: 0,
+    required: false,
   },
-  methods: {
-    inClick(index: number) {
-      this.$emit("clickItem", index);
-    },
-  },
-};
+});
+const width = ref(getRpx(screen.value.width));
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 @import "./adm.scss";
 .bottom-wrap {
   display: flex;
   position: fixed;
-  right: 0;
+  width: 100%;
   bottom: 0;
 
   .pss {
     position: absolute;
     transform: rotate(-90deg);
-    transform-origin: right bottom;
-    right: 0;
-    bottom: $line-lg + $width-base/ 2;
+    transform-origin: left top;
+    top: $line-lg + calc($width-base / 2);
     z-index: 1;
   }
 
   .bottom {
-    justify-content: flex-end;
-    /* width: 100px; */
-    /* TODO: 应当在html模块中添加style项来使其宽度不超过tab，具体width值应由dom计算 */
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
     z-index: 0;
   }
 }
