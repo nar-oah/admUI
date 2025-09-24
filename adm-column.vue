@@ -28,9 +28,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, onMounted, ref, useSlots } from "vue";
-import { screen, item, getRandom, getPx, getRpx } from "./adm";
-import type { ItemInfo, ItemUnit, ItemWrap } from "./adm";
+import { computed, defineProps, ref, useSlots } from "vue";
+import { getRandom } from "./adm";
+import { light, dark, width, height, font } from "./constants";
 
 const props = defineProps({
   borderText: {
@@ -55,12 +55,12 @@ const props = defineProps({
   },
   light: {
     type: String,
-    default: "#E3B4B8",
+    default: light.primary,
     required: false,
   },
   dark: {
     type: String,
-    default: "#EE3F4D",
+    default: dark.primary,
     required: false,
   },
   height: {
@@ -68,37 +68,50 @@ const props = defineProps({
     default: 0,
     required: false,
   },
+  width: {
+    type: Number,
+    default: width.base,
+    required: false,
+  },
 });
 const main = ref<string>(initMain("管理局"));
+const wrap = {
+  width: props.width,
+  height: font.mini * 2,
+};
+const unit = {
+  border: font.mini,
+  left: font.mini,
+  main: font.base,
+};
 const border = computed(() => {
-  const borderWidth = item.value.unit.border * (props.borderText.length + 0.5);
+  const borderWidth = unit.border * (props.borderText.length + 0.5);
   return {
     text: props.borderText + "-",
-    repeat: Math.ceil(item.value.wrap.width / borderWidth) + 1,
+    repeat: Math.ceil(wrap.width / borderWidth) + 1,
     topRandom: getRandom(-borderWidth, 0),
     bottomRandom: getRandom(-borderWidth, 0),
   };
 });
 const left = computed(() => {
-  const leftHeight = item.value.unit.left * (props.leftText.length + 1);
-  const wrapHeight = item.value.wrap.height;
-  const mainHeight = item.value.unit.main * main.value.length;
-  const height = getPx(props.height) || wrapHeight + mainHeight;
+  const leftHeight = (unit.left + 5.26) * props.leftText.length + width.mini;
+  const mainHeight = unit.main * main.value.length;
+  const height = props.height || wrap.height + mainHeight;
   return {
-    repeat: Math.ceil(height / (leftHeight || height)) + 1,
+    repeat: Math.ceil(height / leftHeight) + 1,
     random: getRandom(-leftHeight, 0),
   };
 });
 const inputStyles = computed(() => {
-  const mainUnit = getRpx(item.value.unit.main);
-  const wrapHeight = getRpx(item.value.wrap.height);
-  const mainHeight = mainUnit * main.value.length;
-  const pssHeight: string = mainUnit ? `${mainHeight + wrapHeight}rpx` : "auto";
+  const mainHeight = unit.main * main.value.length;
+  const pssHeight = unit.main ? `${mainHeight + wrap.height}rpx` : "auto";
+  const baseWidth = props.isThin ? height.mini : width.base;
   return {
     "--fore-color": props.isRev ? props.light : props.dark,
     "--bg-color": props.isRev ? props.dark : props.light,
-    "--width": `${props.isThin ? 52.63 : 70.18}rpx`,
+    "--width": `${wrap.width}rpx`,
     "--height": props.height ? `${props.height}rpx` : pssHeight,
+    "--main-offset": `${wrap.width - baseWidth + 21.05}rpx`,
     "--top-random": `${border.value.topRandom}rpx`,
     "--left-random": `${left.value.random}rpx`,
     "--bottom-random": `${border.value.bottomRandom}rpx`,
@@ -111,35 +124,6 @@ function initMain(defaultMain: string): string {
   const children = vnodes[0].children;
   return typeof children === "string" ? children : defaultMain;
 }
-function initItem() {
-  if (item.value.updated != screen.value.width) {
-    // @ts-ignore
-    const query = uni.createSelectorQuery().in(this);
-    query.select("#itemWrap").boundingClientRect();
-    query.select("#itemBorder").boundingClientRect();
-    query.select("#itemLeft").boundingClientRect();
-    query.select("#itemMain").boundingClientRect();
-    query.exec((res) => {
-      const [wrapRect, borderRect, leftRect, mainRect] = res;
-      const updateWrap: ItemWrap = {
-        width: wrapRect.width, //BUG: width数据应分为thin与normal
-        height: borderRect.height * 2,
-      };
-      const updateUnit: ItemUnit = {
-        border: borderRect.width / (props.borderText.length + 0.5),
-        left: leftRect.height / (props.leftText.length + 1),
-        main: mainRect.height / main.value.length,
-      };
-      const updateItem: ItemInfo = {
-        updated: screen.value.width,
-        wrap: updateWrap,
-        unit: updateUnit,
-      };
-      item.value = updateItem;
-    });
-  }
-}
-onMounted(() => initItem());
 </script>
 
 <style scoped lang="scss">
