@@ -46,11 +46,12 @@ const openList = computed((): SealInfo[] => {
   return list;
 });
 const gropList = computed((): SealInfo[] => {
-  return gropSeal.value.map((item) => {
+  return gropSeal.value.map((item: SealInfo, index: number) => {
+    const offset = index == 0 ? 34.88 : 17.44;
     return {
       icon: item.icon,
-      top: item.top - 35.09,
-      height: item.height + 35.09,
+      top: item.top - offset,
+      height: item.height + 34.88,
     };
   });
 });

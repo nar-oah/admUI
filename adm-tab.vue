@@ -1,9 +1,9 @@
 <template>
   <adm-fill :fill-text="props.text" style="position: fixed">
     <view v-for="(item, index) in props.tabArr" :key="index">
-      <adm-item :is-rev="props.current == index" @click="emit('click', index)">
+      <adm-column :isRev="props.current == index" @click="emit('click', index)">
         {{ item }}
-      </adm-item>
+      </adm-column>
     </view>
   </adm-fill>
 </template>
