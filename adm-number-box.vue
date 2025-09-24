@@ -1,27 +1,29 @@
 <template>
-  <view class="message-wrap" :style="numberStyle">
-    <adm-button
-      class="add"
-      :disabled="isMax"
-      data="增"
-      @click="handleAdd"
-    ></adm-button>
-    <input
-      class="number"
-      type="digit"
-      :value="placeholder"
-      :placeholder="placeholder.toString()"
-      placeholder-style="color: var(--fore-color)"
-      @blur="handleConfirm($event.detail)"
-    />
-    <adm-button
-      class="reduce"
-      :disabled="isMin"
-      data="减"
-      @click="handleReduce"
-    ></adm-button>
-    <slot></slot>
-  </view>
+  <adm-message :isGrop="true">
+    <view class="message-wrap" :style="numberStyle">
+      <adm-button
+        class="add"
+        :disabled="isMax"
+        data="增"
+        @click="handleAdd"
+      ></adm-button>
+      <input
+        class="number"
+        type="digit"
+        :value="placeholder"
+        :placeholder="placeholder.toString()"
+        placeholder-style="color: var(--fore-color)"
+        @blur="handleConfirm($event.detail)"
+      />
+      <adm-button
+        class="reduce"
+        :disabled="isMin"
+        data="减"
+        @click="handleReduce"
+      ></adm-button>
+      <slot></slot>
+    </view>
+  </adm-message>
 </template>
 
 <script setup lang="ts">

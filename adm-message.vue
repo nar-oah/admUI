@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps } from "vue";
+import { computed, defineProps, inject, ref } from "vue";
 import { screen, getRpx } from "./adm";
 
 const props = defineProps({
@@ -55,19 +55,19 @@ const props = defineProps({
     default: 52.63,
     required: false,
   },
-  offset: {
-    type: Number,
-    default: 0,
-    required: false,
-  },
 });
 const width = computed(() =>
   props.isGrop ? 684.21 : getRpx(screen.value.width),
 );
 const messageStyles = computed(() => {
+  const defaultOffset = ref(0);
+  const getDefault = () => defaultOffset;
+  const getOffset = inject("Grop", getDefault);
+  const offset = getOffset();
   return {
+    "--position": offset.value ? "absolute" : "",
     "--height": `${props.height}rpx`,
-    "--offset": `${props.offset}rpx`,
+    "--offset": `${offset.value}rpx`,
     "--origin": `${props.height / 2}rpx`,
   };
 });
@@ -76,11 +76,11 @@ const messageStyles = computed(() => {
 <style scoped lang="scss">
 @import "./adm.scss";
 .message-wrap {
-  /* position: absolute; */
+  position: var(--position);
   transform: rotate(-90deg);
   transform-origin: var(--origin) var(--origin);
   height: var(--height);
   width: var(--height);
-  /* top: var(--offset); */
+  top: var(--offset);
 }
 </style>

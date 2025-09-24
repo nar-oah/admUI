@@ -1,8 +1,8 @@
 <template>
   <view id="gropContainer" class="container" :style="containerStyle">
-    <!-- <adm-background :is-thin="true" :is-rev="true"> -->
-    <!--   {{ background }} -->
-    <!-- </adm-background> -->
+    <adm-background :is-thin="true" :is-rev="true">
+      {{ background }}
+    </adm-background>
     <adm-column
       v-for="(item, index) in column"
       :key="index"
@@ -21,19 +21,13 @@
     >
       {{ item }}
     </adm-message>
-    <adm-message
-      v-for="(node, index) in slotNodes"
-      :key="node"
-      :style="{ position: 'absolute', top: `${random[index]}rpx` }"
-      :isGrop="true"
-    >
-      <component :is="node"></component>
-    </adm-message>
+    <slot></slot>
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed, getCurrentInstance, onMounted, useSlots } from "vue";
+import { getCurrentInstance, provide, useSlots } from "vue";
+import { computed, onMounted } from "vue";
 import { endSeal, getRandom, getRpx, gropSeal } from "./adm";
 const props = defineProps({
   isRandom: {
@@ -82,7 +76,7 @@ const slotNodes = computed(() => {
     (item) => typeof item.type === "object" || typeof item.type === "string",
   );
 });
-const messageNum = computed(() => slotNodes.value.length ?? props.row.length);
+const messageNum = computed(() => slotNodes.value.length || props.row.length);
 const rangeHeight = computed(() => {
   const height = props.height / messageNum.value || pssHeight * 1.9;
   const minHeight = props.min / messageNum.value;
@@ -103,7 +97,13 @@ const random = computed(() => {
     return random > offBase ? random : item + offBase;
   });
 });
+let offsetCount = 0;
 
+function getOffset() {
+  const index = offsetCount;
+  offsetCount++;
+  return computed(() => random.value[index]);
+}
 function initCollapse() {
   const query = uni.createSelectorQuery().in(componentInstance);
   query.select("#gropContainer").boundingClientRect();
@@ -118,12 +118,14 @@ function initCollapse() {
   });
 }
 onMounted(() => initCollapse());
+provide("Grop", getOffset);
 </script>
 
 <style scoped lang="scss">
 @import "./adm.scss";
 .container {
   position: relative;
+  margin: $grop-spacing;
   width: $width-lg;
   height: var(--height);
   background-color: $container-color;

@@ -1,8 +1,8 @@
 <template>
-  <text>
+  <adm-message :isGrop="true">
     {{ info.hour }}時{{ info.minutes }}分{{ info.seconds }}秒
     <slot></slot>
-  </text>
+  </adm-message>
 </template>
 
 <script setup lang="ts">
