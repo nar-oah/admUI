@@ -1,12 +1,12 @@
 <template>
-  <view id="itemWrap" class="item-wrap" :style="inputStyles">
+  <view id="itemWrap" class="item-wrap" :style="rowStyles">
     <view class="border">
       <text id="itemBorder" class="text top">
-        {{ border.text.repeat(border.repeat || 1) }}
+        {{ border.text.repeat(border.repeat) }}
       </text>
     </view>
     <view class="left-wrap">
-      <view id="itemLeft" class="left" v-for="n in left.repeat || 1" :key="n">
+      <view id="itemLeft" class="left" v-for="n in left.repeat" :key="n">
         <text class="text">{{ leftText }}</text>
         <view class="seal">封</view>
       </view>
@@ -18,7 +18,7 @@
     </view>
     <view class="border">
       <text class="text bottom">
-        {{ border.text.repeat(border.repeat || 1) }}
+        {{ border.text.repeat(border.repeat) }}
       </text>
     </view>
   </view>
@@ -72,18 +72,12 @@ const props = defineProps({
   },
 });
 const main = ref<string>(initMain("管理局"));
-const wrap = {
-  width: props.width,
-  height: height.base * main.value.length + font.mini * 2,
-};
-const unit = {
-  border: font.mini,
-  left: font.mini,
-  main: font.base,
-};
-const pssHeight = computed(() => props.height || wrap.height);
+const pssHeight = computed(() => {
+  const wrapHeight = height.base * main.value.length + font.mini * 2;
+  return props.height || wrapHeight;
+});
 const border = computed(() => {
-  const borderWidth = unit.border * (props.borderText.length + 0.5);
+  const borderWidth = font.mini * (props.borderText.length + 0.5);
   return {
     text: props.borderText + "-",
     repeat: Math.ceil(props.width / borderWidth) + 1,
@@ -92,13 +86,13 @@ const border = computed(() => {
   };
 });
 const left = computed(() => {
-  const leftHeight = (unit.left + 5.26) * props.leftText.length + width.mini;
+  const leftHeight = (font.mini + 5.26) * props.leftText.length + width.mini;
   return {
     repeat: Math.ceil(pssHeight.value / leftHeight) + 1,
     random: getRandom(-leftHeight, 0),
   };
 });
-const inputStyles = computed(() => {
+const rowStyles = computed(() => {
   const baseWidth = props.isThin ? height.mini : width.base;
   return {
     "--fore-color": props.isRev ? props.light : props.dark,
