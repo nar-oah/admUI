@@ -69,7 +69,7 @@ onMounted(() => {
 .wrap {
   height: var(--height);
   width: $width-base;
-  background-color: $primary-light;
+  background-color: $light-primary;
   position: absolute;
   top: 0;
   overflow: hidden;
@@ -77,16 +77,16 @@ onMounted(() => {
   transform-origin: calc($width-base / 2) calc($width-base / 2);
 
   .fill {
-    width: $width-base - $font-spacing;
-    margin-left: $font-spacing;
+    width: $width-base - $spacing-mini;
+    margin-left: $spacing-mini;
 
     .text {
       display: flex;
       overflow: hidden;
-      color: $primary-dark;
+      color: $dark-primary;
       font-family: adm-medium;
       font-size: $font-sm;
-      letter-spacing: $font-spacing;
+      letter-spacing: $spacing-mini;
       line-height: $line-sm;
       margin-top: var(--random);
     }

@@ -13,43 +13,43 @@ interface Size {
   bg: number;
 }
 
-const light: Color = {
+export const light: Color = {
   primary: "#E3B4B8",
   secondary: "#73575C",
   background: "#533B40",
   container: "#73575C",
 };
-const dark: Color = {
+export const dark: Color = {
   primary: "#EE3F4D",
   secondary: "#7A7374",
   background: "#36282B",
-  container: "",
+  container: "#ffffff",
 };
-const font: Size = {
+export const font: Size = {
   mini: 10.53,
   sm: 28.07,
-  base: 42.11,
+  base: 41.86,
   md: 63.16,
   lg: 175.44,
   bg: 84.22,
 };
-const width: Size = {
+export const width: Size = {
   mini: 15.79,
-  sm: 0,
+  sm: 17.44,
   base: 70.18,
   md: 0,
   lg: 684.21,
   bg: 0,
 };
-const height: Size = {
+export const height: Size = {
   mini: 52.62,
   sm: 245.61,
-  base: 0,
+  base: 87.21,
   md: 403.51,
   lg: 561.4,
   bg: 0,
 };
-const line: Size = {
+export const line: Size = {
   mini: 8.77,
   sm: 17.54,
   base: 0,
@@ -57,10 +57,10 @@ const line: Size = {
   lg: 140.35,
   bg: 0,
 };
-const spacing: Size = {
+export const spacing: Size = {
   mini: -3.51,
   sm: 8.77,
-  base: 35.09,
+  base: 34.88,
   md: 0,
   lg: 0,
   bg: 0,
@@ -79,11 +79,11 @@ export function initConstants(): string {
 }
 function handleColor(name: string, color: Color): string {
   return Object.entries(color)
-    .map(([key, value]) => `$${name}-${key}: ${value}`)
+    .map(([key, value]) => `$${name}-${key}: ${value};`)
     .join("\n");
 }
 function handleSize(name: string, size: Size): string {
   return Object.entries(size)
-    .map(([key, value]) => `$${name}-${key}: ${value}rpx`)
+    .map(([key, value]) => `$${name}-${key}: ${value}rpx;`)
     .join("\n");
 }

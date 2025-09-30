@@ -18,7 +18,8 @@
 
 <script setup lang="ts">
 import { computed, defineProps, useSlots, ref, defineEmits } from "vue";
-import { getRandom, item } from "./adm";
+import { getRandom } from "./adm";
+import { font, height, light, width } from "./constants";
 
 const props = defineProps({
   isComplete: {
@@ -48,12 +49,12 @@ const props = defineProps({
   },
   light: {
     type: String,
-    default: "#73575C",
+    default: light.secondary,
     required: false,
   },
   dark: {
     type: String,
-    default: "#E3B4B8",
+    default: light.primary,
     required: false,
   },
 });
@@ -61,13 +62,12 @@ const emit = defineEmits(["update:isComplete", "change"]);
 const isComplete = ref<boolean>(props.isComplete);
 const main = ref<string>(initMain("待辦項"));
 const todoStyles = computed(() => {
-  const pssHeight = 42.63;
-  //BUG: 修改main单字符宽度为正确值
-  const textWidth = item.value.wrap.height * main.value.length;
+  const pssHeight = height.mini - width.mini - width.sm;
+  const textWidth = font.base * main.value.length;
   return {
     "--complete-line": isComplete.value ? "line-through" : "none",
     "--seal-top": `${getRandom(0, pssHeight)}rpx`,
-    "--seal-left": `${getRandom(200, 250)}rpx`,
+    "--seal-left": `${getRandom(textWidth, textWidth - font.base)}rpx`,
     "--seal-deg": `${getRandom(-90, 90)}deg`,
   };
 });
@@ -86,7 +86,6 @@ function handleTodo() {
 </script>
 
 <style scoped lang="scss">
-@import "./adm.scss";
 .todo {
   .text {
     text-decoration-line: var(--complete-line);

@@ -6,7 +6,7 @@
     <adm-column
       v-for="(item, index) in column"
       :key="index"
-      :style="{ position: 'absolute', left: `${pssHeight * index}rpx` }"
+      :style="{ position: 'absolute', left: `${height.mini * index}rpx` }"
       :height="rangeHeight * messageNum"
       :isRev="true"
       @click="emit('click', index)"
@@ -29,6 +29,7 @@
 import { getCurrentInstance, provide, useSlots } from "vue";
 import { computed, onMounted } from "vue";
 import { endSeal, getRandom, getRpx, gropSeal } from "./adm";
+import { height } from "./constants";
 const props = defineProps({
   isRandom: {
     type: Boolean,
@@ -68,7 +69,6 @@ const props = defineProps({
 });
 const componentInstance = getCurrentInstance();
 const emit = defineEmits(["click"]);
-const pssHeight = 52.63;
 const slots = useSlots();
 const slotNodes = computed(() => {
   const slotArr = slots.default ? slots.default() : [];
@@ -78,21 +78,21 @@ const slotNodes = computed(() => {
 });
 const messageNum = computed(() => slotNodes.value.length || props.row.length);
 const rangeHeight = computed(() => {
-  const height = props.height / messageNum.value || pssHeight * 1.9;
+  const pssHeight = props.height / messageNum.value || height.mini * 1.9;
   const minHeight = props.min / messageNum.value;
-  return minHeight > height ? minHeight : height;
+  return minHeight > pssHeight ? minHeight : pssHeight;
 });
 const containerStyle = computed(() => {
   return { "--height": `${rangeHeight.value * messageNum.value}rpx` };
 });
 const random = computed(() => {
   const offRandom = Array.from({ length: messageNum.value }, () =>
-    props.isRandom ? getRandom(0, rangeHeight.value - pssHeight) : 0,
+    props.isRandom ? getRandom(0, rangeHeight.value - height.mini) : 0,
   );
   let preRandom = 0;
   return offRandom.map((item, index) => {
     const random = item + preRandom;
-    const offBase = pssHeight * index + preRandom;
+    const offBase = height.mini * index + preRandom;
     preRandom = random;
     return random > offBase ? random : item + offBase;
   });
@@ -122,13 +122,12 @@ provide("Grop", getOffset);
 </script>
 
 <style scoped lang="scss">
-@import "./adm.scss";
 .container {
   position: relative;
-  margin: $grop-spacing;
+  margin: $spacing-base;
   width: $width-lg;
   height: var(--height);
-  background-color: $container-color;
+  background-color: $light-container;
   overflow: hidden;
 }
 </style>

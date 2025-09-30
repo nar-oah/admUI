@@ -2,13 +2,13 @@
   <view class="message-wrap" :style="messageStyles">
     <adm-row
       :isThin="true"
-      :height="width"
+      :height="messageWidth"
       :borderText="borderText"
       :leftText="leftText"
-      :isRev="isRev"
-      :light="light"
-      :dark="dark"
-      :width="height"
+      :isRev="props.isRev"
+      :light="props.light"
+      :dark="props.dark"
+      :width="props.height"
     >
       <slot>信息</slot>
     </adm-row>
@@ -18,6 +18,7 @@
 <script setup lang="ts">
 import { computed, defineProps, inject, ref } from "vue";
 import { screen, getRpx } from "./adm";
+import { dark, height, light, width } from "./constants";
 
 const props = defineProps({
   isGrop: {
@@ -42,22 +43,22 @@ const props = defineProps({
   },
   light: {
     type: String,
-    default: "#E3B4B8",
+    default: light.primary,
     required: false,
   },
   dark: {
     type: String,
-    default: "#EE3F4D",
+    default: dark.primary,
     required: false,
   },
   height: {
     type: Number,
-    default: 52.63,
+    default: height.mini,
     required: false,
   },
 });
-const width = computed(() =>
-  props.isGrop ? 684.21 : getRpx(screen.value.width),
+const messageWidth = computed(() =>
+  props.isGrop ? width.lg : getRpx(screen.value.width),
 );
 const messageStyles = computed(() => {
   const defaultOffset = ref(0);
@@ -74,7 +75,6 @@ const messageStyles = computed(() => {
 </script>
 
 <style scoped lang="scss">
-@import "./adm.scss";
 .message-wrap {
   position: var(--position);
   transform: rotate(-90deg);

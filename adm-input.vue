@@ -10,6 +10,7 @@
 
 <script setup lang="ts">
 import { defineProps, ref, useSlots } from "vue";
+import { dark, light } from "./constants";
 
 const props = defineProps({
   isGrop: {
@@ -34,12 +35,12 @@ const props = defineProps({
   },
   light: {
     type: String,
-    default: "#E3B4B8",
+    default: light.primary,
     required: false,
   },
   dark: {
     type: String,
-    default: "#EE3F4D",
+    default: dark.primary,
     required: false,
   },
 });

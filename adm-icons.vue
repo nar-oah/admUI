@@ -10,6 +10,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { getRandom } from "./adm";
+import { dark, light, line } from "./constants";
 const props = defineProps({
   isRow: {
     type: Boolean,
@@ -33,22 +34,22 @@ const props = defineProps({
   },
   height: {
     type: Number,
-    default: 280.7,
+    default: line.lg * 2,
     required: false,
   },
   light: {
     type: String,
-    default: "#73575C",
+    default: light.secondary,
     required: false,
   },
   dark: {
     type: String,
-    default: "#EE3F4D",
+    default: dark.primary,
     required: false,
   },
   pss: {
     type: String,
-    default: "#E3B4B8",
+    default: light.primary,
     required: false,
   },
 });

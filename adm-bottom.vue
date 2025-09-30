@@ -3,7 +3,7 @@
     <adm-column class="pss" :height="width">{{ props.pssText }}</adm-column>
     <view class="bottom">
       <adm-icons
-        style="width: 175.44rpx"
+        :style="{ width: `${font.lg}rpx` }"
         v-for="(item, index) in props.bottomArr"
         :key="index"
         :is-row="false"
@@ -20,6 +20,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { getRpx, screen } from "./adm";
+import { font } from "./constants";
 
 const emit = defineEmits(["click"]);
 const props = defineProps({

@@ -9,6 +9,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import { getRandom } from "./adm";
+import { light, dark, font } from "./constants";
 
 const props = defineProps({
   isRev: {
@@ -33,12 +34,12 @@ const props = defineProps({
   },
   light: {
     type: String,
-    default: "#533B40",
+    default: light.background,
     required: false,
   },
   dark: {
     type: String,
-    default: "#36282B",
+    default: dark.background,
     required: false,
   },
 });
@@ -48,14 +49,13 @@ const backgroundStyles = computed(() => {
     "--wrap-top": `${getRandom(0, 20)}rpx`,
     "--wrap-left": `${getRandom(0, 20)}rpx`,
     "--text-font": props.isThin ? "adm-thin" : "adm-blod",
-    "--text-size": `${props.isThin ? 63.16 : 84.22}rpx`,
+    "--text-size": `${props.isThin ? font.md : font.bg}rpx`,
     "--text-color": props.isRev ? props.dark : props.light,
   };
 });
 </script>
 
 <style scoped lang="scss">
-@import "./adm.scss";
 .background-wrap {
   position: absolute;
   height: 120%;

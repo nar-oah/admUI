@@ -19,6 +19,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { endSeal, openSeal, gropSeal, screen, sealHeight } from "./adm";
+import { height, spacing } from "./constants";
 import type { SealInfo } from "./adm";
 
 const props = defineProps({
@@ -38,20 +39,21 @@ const openList = computed((): SealInfo[] => {
   let cumulativeTop = 0;
   const list = sortList.map((item) => {
     const top = item.top + cumulativeTop;
-    const height = 52.63 + item.height;
+    const total = height.mini + item.height;
     cumulativeTop += item.height;
-    return { icon: item.icon, top: top, height: height };
+    return { icon: item.icon, top: top, height: total };
   });
   stageHeight.value = cumulativeTop;
   return list;
 });
 const gropList = computed((): SealInfo[] => {
   return gropSeal.value.map((item: SealInfo, index: number) => {
-    const offset = index == 0 ? 34.88 : 17.44;
+    const offset = index == 0 ? spacing.base : spacing.base / 2;
+    const addition = index == 0 ? spacing.base * 1.5 : spacing.base;
     return {
       icon: item.icon,
       top: item.top - offset,
-      height: item.height + 34.88,
+      height: item.height + addition,
     };
   });
 });
@@ -59,7 +61,6 @@ const list = computed((): SealInfo[] => [...openList.value, ...gropList.value]);
 </script>
 
 <style scoped lang="scss">
-@import "./adm.scss";
 .list-wrap {
   display: flex;
   justify-content: center;

@@ -5,6 +5,7 @@
 <script setup lang="ts">
 import { computed, defineProps } from "vue";
 import { getRpx } from "./adm";
+import { dark, light, width } from "./constants";
 
 const props = defineProps({
   data: {
@@ -24,17 +25,17 @@ const props = defineProps({
   },
   light: {
     type: String,
-    default: "#E3B4B8",
+    default: light.primary,
     required: false,
   },
   dark: {
     type: String,
-    default: "#EE3F4D",
+    default: dark.primary,
     required: false,
   },
   size: {
     type: Number,
-    default: 26,
+    default: width.sm,
     required: false,
   },
 });
@@ -63,7 +64,7 @@ const buttonStyles = computed(() => {
   height: var(--size);
   color: var(--text-color);
   background-color: var(--bg-color);
-  border-radius: 100%;
+  border-radius: 50%;
 
   font-size: var(--font-size);
   font-family: var(--type);

@@ -1,10 +1,10 @@
 <template>
   <adm-message
     id="collapse"
-    light="#E3B4B8"
-    dark="#73575C"
     class="collapse"
-    :height="height"
+    :light="light.primary"
+    :dark="light.secondary"
+    :height="collapseHeight"
     :isRev="isOpen"
   >
     <view @click="handleOpen()">{{ title }}</view>
@@ -18,6 +18,7 @@
 import { ref, getCurrentInstance, computed, nextTick, onUpdated } from "vue";
 import { openSeal, getRpx, endSeal } from "./adm";
 import type { SealInfo } from "./adm";
+import { light, height, spacing } from "./constants";
 
 const props = defineProps({
   title: {
@@ -30,12 +31,11 @@ const props = defineProps({
   },
 });
 const componentInstance = getCurrentInstance();
-const collapseHeight = 52.63;
 const isOpen = ref(props.isOpen);
 const isLoad = ref(false);
-const openHeight = ref(collapseHeight);
-const height = computed(() =>
-  isOpen.value ? openHeight.value : collapseHeight,
+const openHeight = ref(height.mini);
+const collapseHeight = computed(() =>
+  isOpen.value ? openHeight.value : height.mini,
 );
 let info: SealInfo = { icon: "展开", top: 0, height: 0 };
 
@@ -56,12 +56,12 @@ async function initCollapse() {
   query.select("#open").boundingClientRect();
   query.exec((res) => {
     const [collapseRect, openRect] = res;
-    const minHeight = 280.7;
+    const minHeight = height.sm + spacing.base;
     const totalHeight = getRpx(openRect.height + collapseRect.height);
     const isMin = minHeight > totalHeight;
     openHeight.value = isMin ? minHeight : totalHeight;
     info.top = getRpx(collapseRect.top);
-    info.height = isMin ? minHeight - collapseHeight : getRpx(openRect.height);
+    info.height = isMin ? minHeight - height.mini : getRpx(openRect.height);
     endSeal.value = collapseRect.bottom;
   });
 }

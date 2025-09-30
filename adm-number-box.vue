@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import { computed, defineProps, ref } from "vue";
 import { getRandom } from "./adm";
+import { dark, height, light, width } from "./constants";
 
 const props = defineProps({
   value: {
@@ -62,12 +63,12 @@ const props = defineProps({
   },
   light: {
     type: String,
-    default: "#E3B4B8",
+    default: light.primary,
     required: false,
   },
   dark: {
     type: String,
-    default: "#EE3F4D",
+    default: dark.primary,
     required: false,
   },
 });
@@ -96,12 +97,12 @@ const placeholder = computed({
   },
 });
 const numberStyle = computed(() => {
-  const height = 32.63;
+  const range = height.mini - width.mini - width.sm;
   return {
     "--width": `${21 * placeholder.value.toString().length}rpx`,
-    "--add-top": `${getRandom(0, height)}rpx`,
+    "--add-top": `${getRandom(0, range)}rpx`,
     "--add-deg": `${getRandom(-90, 90)}deg`,
-    "--reduce-top": `${getRandom(0, height)}rpx`,
+    "--reduce-top": `${getRandom(0, range)}rpx`,
     "--reduce-deg": `${getRandom(-90, 90)}deg`,
   };
 });
