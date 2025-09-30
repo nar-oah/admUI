@@ -74,41 +74,38 @@ const props = defineProps({
 const main = ref<string>(initMain("管理局"));
 const wrap = {
   width: props.width,
-  height: font.mini * 2,
+  height: height.base * main.value.length + font.mini * 2,
 };
 const unit = {
   border: font.mini,
   left: font.mini,
   main: font.base,
 };
+const pssHeight = computed(() => props.height || wrap.height);
 const border = computed(() => {
   const borderWidth = unit.border * (props.borderText.length + 0.5);
   return {
     text: props.borderText + "-",
-    repeat: Math.ceil(wrap.width / borderWidth) + 1,
+    repeat: Math.ceil(props.width / borderWidth) + 1,
     topRandom: getRandom(-borderWidth, 0),
     bottomRandom: getRandom(-borderWidth, 0),
   };
 });
 const left = computed(() => {
   const leftHeight = (unit.left + 5.26) * props.leftText.length + width.mini;
-  const mainHeight = unit.main * main.value.length;
-  const height = props.height || wrap.height + mainHeight;
   return {
-    repeat: Math.ceil(height / leftHeight) + 1,
+    repeat: Math.ceil(pssHeight.value / leftHeight) + 1,
     random: getRandom(-leftHeight, 0),
   };
 });
 const inputStyles = computed(() => {
-  const mainHeight = unit.main * main.value.length;
-  const pssHeight = unit.main ? `${mainHeight + wrap.height}rpx` : "auto";
   const baseWidth = props.isThin ? height.mini : width.base;
   return {
     "--fore-color": props.isRev ? props.light : props.dark,
     "--bg-color": props.isRev ? props.dark : props.light,
-    "--width": `${wrap.width}rpx`,
-    "--height": props.height ? `${props.height}rpx` : pssHeight,
-    "--main-offset": `${wrap.width - baseWidth + 21.05}rpx`,
+    "--width": `${props.width}rpx`,
+    "--height": `${pssHeight.value}rpx`,
+    "--main-offset": `${props.width - baseWidth + 21.05}rpx`,
     "--top-random": `${border.value.topRandom}rpx`,
     "--left-random": `${left.value.random}rpx`,
     "--bottom-random": `${border.value.bottomRandom}rpx`,

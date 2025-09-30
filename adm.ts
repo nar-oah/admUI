@@ -3,20 +3,6 @@ interface ScreenInfo {
   height: number;
   width: number;
 }
-export interface ItemInfo {
-  updated: number;
-  wrap: ItemWrap;
-  unit: ItemUnit;
-}
-export interface ItemWrap {
-  width: number;
-  height: number;
-}
-export interface ItemUnit {
-  border: number;
-  main: number;
-  left: number;
-}
 export interface SealInfo {
   icon: string;
   top: number;
@@ -24,13 +10,6 @@ export interface SealInfo {
 }
 
 export const screen = ref<ScreenInfo>(initScreen());
-const initWrap: ItemWrap = { width: 0, height: 0 };
-const initUnit: ItemUnit = { border: 1, main: 0, left: 0 };
-export const item = ref<ItemInfo>({
-  updated: 0,
-  wrap: initWrap,
-  unit: initUnit,
-});
 export const openSeal = ref<SealInfo[]>([]);
 export const gropSeal = ref<SealInfo[]>([]);
 export const sealHeight = ref(0);
