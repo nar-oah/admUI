@@ -70,10 +70,15 @@ const props = defineProps({
     default: width.base,
     required: false,
   },
+  mainHeight: {
+    type: Number,
+    default: 0,
+    required: false,
+  },
 });
 const main = ref<string>(initMain("管理局"));
 const pssHeight = computed(() => {
-  const wrapHeight = height.base * main.value.length + font.mini * 2;
+  const wrapHeight = font.base * main.value.length + font.mini * 2;
   return props.height || wrapHeight;
 });
 const border = computed(() => {
@@ -100,6 +105,7 @@ const rowStyles = computed(() => {
     "--width": `${props.width}rpx`,
     "--height": `${pssHeight.value}rpx`,
     "--main-offset": `${props.width - baseWidth + 21.05}rpx`,
+    "--main-width": `${props.mainHeight || pssHeight.value - font.mini * 2}rpx`,
     "--top-random": `${border.value.topRandom}rpx`,
     "--left-random": `${left.value.random}rpx`,
     "--bottom-random": `${border.value.bottomRandom}rpx`,
@@ -185,11 +191,13 @@ function initMain(defaultMain: string): string {
     color: var(--fore-color);
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     margin-left: var(--main-offset);
     height: var(--height);
-    width: var(--height);
+    width: var(--main-width);
 
     .slot {
+      overflow-wrap: break-word;
       font-family: adm-medium;
       font-size: $font-base;
       transform: rotate(90deg);

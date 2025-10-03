@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, provide, ref } from "vue";
 import { endSeal, openSeal, gropSeal, screen, sealHeight } from "./adm";
 import { height, spacing } from "./constants";
 import type { SealInfo } from "./adm";
@@ -49,15 +49,17 @@ const openList = computed((): SealInfo[] => {
 const gropList = computed((): SealInfo[] => {
   return gropSeal.value.map((item: SealInfo, index: number) => {
     const offset = index == 0 ? spacing.base : spacing.base / 2;
-    const addition = index == 0 ? spacing.base * 1.5 : spacing.base;
+    // const addition = index == 0 ? spacing.base * 1.5 : spacing.base;
+    const addition = spacing.base * 2;
     return {
       icon: item.icon,
-      top: item.top - offset,
+      top: item.top,
       height: item.height + addition,
     };
   });
 });
-const list = computed((): SealInfo[] => [...openList.value, ...gropList.value]);
+const list = computed((): SealInfo[] => [...openList.value, ...gropSeal.value]);
+provide("Seal", true);
 </script>
 
 <style scoped lang="scss">

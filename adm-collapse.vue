@@ -6,16 +6,26 @@
     :dark="light.secondary"
     :height="collapseHeight"
     :isRev="isOpen"
+    :isWrap="true"
   >
     <view @click="handleOpen()">{{ title }}</view>
-    <view id="open" class="open" v-show="isOpen">
-      <slot v-if="isLoad"></slot>
-    </view>
+    <template #info>
+      <view id="open" class="open" v-show="isOpen">
+        <slot v-if="isLoad"></slot>
+      </view>
+    </template>
   </adm-message>
 </template>
 
 <script setup lang="ts">
-import { ref, getCurrentInstance, computed, nextTick, onUpdated } from "vue";
+import {
+  ref,
+  getCurrentInstance,
+  computed,
+  nextTick,
+  onUpdated,
+  provide,
+} from "vue";
 import { openSeal, getRpx, endSeal } from "./adm";
 import type { SealInfo } from "./adm";
 import { light, height, spacing } from "./constants";
@@ -33,6 +43,7 @@ const props = defineProps({
 const componentInstance = getCurrentInstance();
 const isOpen = ref(props.isOpen);
 const isLoad = ref(false);
+const additionHeight = ref(0);
 const openHeight = ref(height.mini);
 const collapseHeight = computed(() =>
   isOpen.value ? openHeight.value : height.mini,
@@ -62,20 +73,28 @@ async function initCollapse() {
     openHeight.value = isMin ? minHeight : totalHeight;
     info.top = getRpx(collapseRect.top);
     info.height = isMin ? minHeight - height.mini : getRpx(openRect.height);
+    info.height += additionHeight.value;
     endSeal.value = collapseRect.bottom;
   });
 }
+function updateHeight(addHeight: number) {
+  console.log(addHeight);
+
+  additionHeight.value = addHeight;
+}
 onUpdated(() => (isLoad.value = true));
+provide("MainNum", props.title.length);
+provide("UpdateHeight", updateHeight);
 </script>
 
 <style scoped lang="scss">
-.collapse {
-  /* transition: max-height 0.3s ease-out; */
-  /* will-change: max-height; */
-  .open {
-    position: absolute;
-    top: 52.63rpx;
-    left: -12.53rpx;
-  }
+/* .collapse { */
+/* transition: max-height 0.3s ease-out; */
+/* will-change: max-height; */
+.open {
+  position: absolute;
+  top: 52.63rpx;
+  left: -12.53rpx;
 }
+/* } */
 </style>

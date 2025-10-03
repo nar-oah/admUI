@@ -1,27 +1,21 @@
 <template>
-  <view id="gropContainer" class="container" :style="containerStyle">
-    <adm-background :is-thin="true" :is-rev="true">
-      {{ background }}
-    </adm-background>
-    <adm-column
-      v-for="(item, index) in column"
-      :key="index"
-      :style="{ position: 'absolute', left: `${height.mini * index}rpx` }"
-      :height="rangeHeight * messageNum"
-      :isRev="true"
-      @click="emit('click', index)"
-    >
-      {{ item }}
-    </adm-column>
-    <adm-message
-      v-for="(item, index) in row"
-      :key="index"
-      :style="{ position: 'absolute', top: `${random[index]}rpx` }"
-      :isGrop="true"
-    >
-      {{ item }}
-    </adm-message>
-    <slot></slot>
+  <view id="gropContainer" class="wrap" :style="containerStyle">
+    <view class="container">
+      <adm-background :is-thin="true" :is-rev="true">
+        {{ background }}
+      </adm-background>
+      <adm-column
+        v-for="(item, index) in column"
+        :key="index"
+        :style="{ position: 'absolute', left: `${height.mini * index}rpx` }"
+        :height="containerHeight"
+        :isRev="true"
+        @click="emit('click', index)"
+      >
+        {{ item }}
+      </adm-column>
+      <slot></slot>
+    </view>
   </view>
 </template>
 
@@ -29,7 +23,7 @@
 import { getCurrentInstance, provide, useSlots } from "vue";
 import { computed, onMounted } from "vue";
 import { endSeal, getRandom, getRpx, gropSeal } from "./adm";
-import { height } from "./constants";
+import { height, spacing } from "./constants";
 const props = defineProps({
   isRandom: {
     type: Boolean,
@@ -47,10 +41,6 @@ const props = defineProps({
     required: false,
   },
   column: {
-    type: Array,
-    required: false,
-  },
-  row: {
     type: Array,
     default: [],
     required: false,
@@ -70,21 +60,20 @@ const props = defineProps({
 const componentInstance = getCurrentInstance();
 const emit = defineEmits(["click"]);
 const slots = useSlots();
+let offsetCount = 0;
 const slotNodes = computed(() => {
   const slotArr = slots.default ? slots.default() : [];
   return slotArr.filter(
     (item) => typeof item.type === "object" || typeof item.type === "string",
   );
 });
-const messageNum = computed(() => slotNodes.value.length || props.row.length);
+const messageNum = computed(() => slotNodes.value.length);
 const rangeHeight = computed(() => {
   const pssHeight = props.height / messageNum.value || height.mini * 1.9;
   const minHeight = props.min / messageNum.value;
   return minHeight > pssHeight ? minHeight : pssHeight;
 });
-const containerStyle = computed(() => {
-  return { "--height": `${rangeHeight.value * messageNum.value}rpx` };
-});
+const containerHeight = computed(() => rangeHeight.value * messageNum.value);
 const random = computed(() => {
   const offRandom = Array.from({ length: messageNum.value }, () =>
     props.isRandom ? getRandom(0, rangeHeight.value - height.mini) : 0,
@@ -97,7 +86,12 @@ const random = computed(() => {
     return random > offBase ? random : item + offBase;
   });
 });
-let offsetCount = 0;
+const containerStyle = computed(() => {
+  return {
+    "--wrap-height": `${containerHeight.value + spacing.base * 2}rpx`,
+    "--container-height": `${containerHeight.value}rpx`,
+  };
+});
 
 function getOffset() {
   const index = offsetCount;
@@ -113,7 +107,7 @@ function initCollapse() {
     gropSeal.value.push({
       icon: props.icon,
       top: getRpx(containerRect.top),
-      height: rangeHeight.value * messageNum.value,
+      height: containerHeight.value + spacing.base * 2,
     });
   });
 }
@@ -122,12 +116,19 @@ provide("Grop", getOffset);
 </script>
 
 <style scoped lang="scss">
-.container {
-  position: relative;
-  margin: $spacing-base;
-  width: $width-lg;
-  height: var(--height);
-  background-color: $light-container;
-  overflow: hidden;
+.wrap {
+  width: 100vw;
+  height: var(--wrap-height);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .container {
+    position: relative;
+    width: $width-lg;
+    height: var(--container-height);
+    background-color: $light-container;
+    overflow: hidden;
+  }
 }
 </style>

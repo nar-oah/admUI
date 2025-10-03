@@ -8,24 +8,25 @@
       :isRev="props.isRev"
       :light="props.light"
       :dark="props.dark"
-      :width="props.height"
+      :width="props.height + additionHeight"
+      :mainHeight="isClick ? mainWidth : 0"
     >
-      <slot>信息</slot>
+      <view @click="isClick = props.isWrap ? !isClick : false">
+        <slot>信息</slot>
+      </view>
+      <view class="info">
+        <slot name="info"></slot>
+      </view>
     </adm-row>
   </view>
 </template>
 
 <script setup lang="ts">
-import { computed, defineProps, inject, ref } from "vue";
+import { computed, defineProps, inject, ref, useSlots } from "vue";
 import { screen, getRpx } from "./adm";
-import { dark, height, light, width } from "./constants";
+import { dark, font, height, light, line, width } from "./constants";
 
 const props = defineProps({
-  isGrop: {
-    type: Boolean,
-    default: false,
-    required: false,
-  },
   borderText: {
     type: String,
     default: "委員會",
@@ -37,6 +38,11 @@ const props = defineProps({
     required: false,
   },
   isRev: {
+    type: Boolean,
+    default: false,
+    required: false,
+  },
+  isWrap: {
     type: Boolean,
     default: false,
     required: false,
@@ -57,21 +63,47 @@ const props = defineProps({
     required: false,
   },
 });
-const messageWidth = computed(() =>
-  props.isGrop ? width.lg : getRpx(screen.value.width),
-);
-const messageStyles = computed(() => {
-  const defaultOffset = ref(0);
-  const getDefault = () => defaultOffset;
+const isClick = ref(false);
+const mainNum = inject("MainNum", initMain("管理局").length);
+const update = inject("UpdateHeight", (date: number) => date);
+const offset = computed(() => {
+  const getDefault = () => ref(null);
   const getOffset = inject("Grop", getDefault);
-  const offset = getOffset();
+  return getOffset().value;
+});
+const messageWidth = computed(() =>
+  offset.value != null ? width.lg : getRpx(screen.value.width),
+);
+const mainWidth = computed(() => {
+  const defaultWidth = messageWidth.value - font.mini * 2;
+  const isSeal = inject("Seal", false);
+  const sealWidth = isSeal && props.isWrap ? line.lg * 2 : 0;
+  return defaultWidth - sealWidth;
+});
+const additionHeight = computed(() => {
+  const lineNum = Math.floor(mainWidth.value / font.base);
+  const additionLine = Math.floor(mainNum / lineNum);
+  const res = isClick.value ? additionLine * font.base : 0;
+  update(additionLine * font.base);
+  return res;
+});
+const messageStyles = computed(() => {
   return {
     "--position": offset.value ? "absolute" : "",
     "--height": `${props.height}rpx`,
-    "--offset": `${offset.value}rpx`,
+    "--offset": `${offset.value ?? 0}rpx`,
     "--origin": `${props.height / 2}rpx`,
+    "--info": `${additionHeight.value}rpx`,
+    "--index": additionHeight.value == 0 ? 0 : 1,
   };
 });
+
+function initMain(defaultMain: string): string {
+  const slots = useSlots();
+  const vnodes = slots.default ? slots.default() : [{ children: defaultMain }];
+  const children = vnodes[0].children;
+  return typeof children === "string" ? children : defaultMain;
+}
 </script>
 
 <style scoped lang="scss">
@@ -82,5 +114,11 @@ const messageStyles = computed(() => {
   height: var(--height);
   width: var(--height);
   top: var(--offset);
+  margin-top: var(--info);
+  z-index: var(--index);
+  .info {
+    position: absolute;
+    top: var(--info);
+  }
 }
 </style>
