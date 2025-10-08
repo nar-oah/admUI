@@ -4,8 +4,7 @@
 
 <script setup lang="ts">
 import { computed, defineProps } from "vue";
-import { getRpx } from "./adm";
-import { dark, light, width } from "./constants";
+import { dark, light, spacing } from "./constants";
 
 const props = defineProps({
   data: {
@@ -35,19 +34,18 @@ const props = defineProps({
   },
   size: {
     type: Number,
-    default: width.sm,
+    default: spacing.base,
     required: false,
   },
 });
 
 const buttonStyles = computed(() => {
-  const size = getRpx(props.size);
   return {
     "--type": `adm-${props.buttonType}`,
     "--text-color": props.light,
     "--bg-color": props.dark,
-    "--size": `${size}rpx`,
-    "--font-size": `${size * 0.9}rpx`,
+    "--size": `${props.size}rpx`,
+    "--font-size": `${props.size * 0.9}rpx`,
   };
 });
 </script>
@@ -64,23 +62,20 @@ const buttonStyles = computed(() => {
   height: var(--size);
   color: var(--text-color);
   background-color: var(--bg-color);
-  border-radius: 50%;
+  border-radius: 100%;
 
   font-size: var(--font-size);
   font-family: var(--type);
 }
 
 .adm-button[disabled] {
-  color: var(--text-color);
-  background-color: var(--bg-color);
+  color: var(--bg-color);
+  background-color: var(--text-color);
+  border: 1.744rpx solid var(--bg-color);
 }
 
 .adm-button:hover:not([disabled]) {
   filter: brightness(110%);
-}
-
-.adm-button:focus {
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
 }
 
 .adm-button:active:not([disabled]) {
