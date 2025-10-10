@@ -11,7 +11,7 @@
       :width="props.height + additionHeight"
       :mainHeight="isClick ? mainWidth : 0"
     >
-      <view @click="isClick = props.isWrap ? !isClick : false">
+      <view @click="isClick = !isClick">
         <slot>信息</slot>
       </view>
       <view class="info">
@@ -37,12 +37,12 @@ const props = defineProps({
     default: "管理局委員會",
     required: false,
   },
-  isRev: {
-    type: Boolean,
-    default: false,
+  mainNum: {
+    type: Number,
+    default: 0,
     required: false,
   },
-  isWrap: {
+  isRev: {
     type: Boolean,
     default: false,
     required: false,
@@ -64,11 +64,10 @@ const props = defineProps({
   },
 });
 const isClick = ref(false);
-const mainNum = inject("MainNum", initMain("管理局").length);
-const update = inject("UpdateHeight", (date: number) => date);
+const mainNum = ref(props.mainNum || initMain("管理局").length);
+const emits = defineEmits(["more"]);
 const offset = computed(() => {
-  const getDefault = () => ref(null);
-  const getOffset = inject("Grop", getDefault);
+  const getOffset = inject("Grop", () => ref(null));
   return getOffset().value;
 });
 const messageWidth = computed(() =>
@@ -77,15 +76,15 @@ const messageWidth = computed(() =>
 const mainWidth = computed(() => {
   const defaultWidth = messageWidth.value - font.mini * 2;
   const isSeal = inject("Seal", false);
-  const sealWidth = isSeal && props.isWrap ? line.lg * 2 : 0;
+  const sealWidth = isSeal ? line.lg * 2 : 0;
   return defaultWidth - sealWidth;
 });
 const additionHeight = computed(() => {
   const lineNum = Math.floor(mainWidth.value / font.base);
-  const additionLine = Math.floor(mainNum / lineNum);
-  const res = isClick.value ? additionLine * font.base : 0;
-  update(additionLine * font.base);
-  return res;
+  const additionLine = Math.floor(mainNum.value / lineNum);
+  const additionNum = additionLine * font.base;
+  emits("more", additionNum);
+  return isClick.value ? additionNum : 0;
 });
 const messageStyles = computed(() => {
   return {

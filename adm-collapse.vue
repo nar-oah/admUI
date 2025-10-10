@@ -2,11 +2,13 @@
   <adm-message
     id="collapse"
     class="collapse"
+    :mainNum="props.title.length"
     :light="light.primary"
     :dark="light.secondary"
     :height="collapseHeight"
     :isRev="isOpen"
     :isWrap="true"
+    @more="updateHeight($event)"
   >
     <view @click="handleOpen()">{{ title }}</view>
     <template #info>
@@ -18,14 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  ref,
-  getCurrentInstance,
-  computed,
-  nextTick,
-  onUpdated,
-  provide,
-} from "vue";
+import { ref, getCurrentInstance, computed, nextTick, onUpdated } from "vue";
 import { openSeal, getRpx, endSeal } from "./adm";
 import type { SealInfo } from "./adm";
 import { light, height, spacing } from "./constants";
@@ -78,13 +73,9 @@ async function initCollapse() {
   });
 }
 function updateHeight(addHeight: number) {
-  console.log(addHeight);
-
   additionHeight.value = addHeight;
 }
 onUpdated(() => (isLoad.value = true));
-provide("MainNum", props.title.length);
-provide("UpdateHeight", updateHeight);
 </script>
 
 <style scoped lang="scss">
