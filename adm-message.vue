@@ -75,7 +75,8 @@ const messageWidth = computed(() =>
 );
 const mainWidth = computed(() => {
   const defaultWidth = messageWidth.value - font.mini * 2;
-  const isSeal = inject("Seal", false);
+  const getId = inject("Seal", () => 0);
+  const isSeal = getId() != 0;
   const sealWidth = isSeal ? line.lg * 2 : 0;
   return defaultWidth - sealWidth;
 });

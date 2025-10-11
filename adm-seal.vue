@@ -2,7 +2,7 @@
   <view class="list-wrap">
     <adm-fill style="position: absolute" :height="fillHeight"></adm-fill>
     <adm-icons
-      v-for="item in list"
+      v-for="item in sealList"
       :isPss="true"
       :height="item.height"
       :style="{ position: 'absolute', top: `${item.top}rpx` }"
@@ -17,10 +17,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, provide, ref } from "vue";
-import { endSeal, openSeal, gropSeal, screen, sealHeight } from "./adm";
-import { height, spacing } from "./constants";
-import type { SealInfo } from "./adm";
+import { computed, provide } from "vue";
+import { screen, sealHeight, sealList } from "./adm";
 
 const props = defineProps({
   isRandom: {
@@ -29,37 +27,17 @@ const props = defineProps({
     required: false,
   },
 });
-const stageHeight = ref(0);
 const fillHeight = computed(() => {
-  const height = sealHeight.value + stageHeight.value;
-  return height > screen.value.height ? height : endSeal.value;
+  const height = screen.value.height - sealHeight.value;
+  return height < 0 ? sealHeight.value + 50 : screen.value.height;
 });
-const openList = computed((): SealInfo[] => {
-  const sortList = openSeal.value.slice().sort((a, b) => a.top - b.top);
-  let cumulativeTop = 0;
-  const list = sortList.map((item) => {
-    const top = item.top + cumulativeTop;
-    const total = height.mini + item.height;
-    cumulativeTop += item.height;
-    return { icon: item.icon, top: top, height: total };
-  });
-  stageHeight.value = cumulativeTop;
-  return list;
-});
-const gropList = computed((): SealInfo[] => {
-  return gropSeal.value.map((item: SealInfo, index: number) => {
-    const offset = index == 0 ? spacing.base : spacing.base / 2;
-    // const addition = index == 0 ? spacing.base * 1.5 : spacing.base;
-    const addition = spacing.base * 2;
-    return {
-      icon: item.icon,
-      top: item.top,
-      height: item.height + addition,
-    };
-  });
-});
-const list = computed((): SealInfo[] => [...openList.value, ...gropSeal.value]);
-provide("Seal", true);
+let id = 0;
+
+function getId(): number {
+  id++;
+  return id;
+}
+provide("Seal", getId);
 </script>
 
 <style scoped lang="scss">

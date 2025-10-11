@@ -20,9 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, provide, useSlots } from "vue";
+import { getCurrentInstance, inject, provide, useSlots } from "vue";
 import { computed, onMounted } from "vue";
-import { endSeal, getRandom, getRpx, gropSeal } from "./adm";
+import { getRandom, getRpx, addSeal } from "./adm";
 import { height, spacing } from "./constants";
 const props = defineProps({
   isRandom: {
@@ -60,6 +60,7 @@ const props = defineProps({
 const componentInstance = getCurrentInstance();
 const emit = defineEmits(["click"]);
 const slots = useSlots();
+const getId = inject("Seal", () => 0);
 let offsetCount = 0;
 const slotNodes = computed(() => {
   const slotArr = slots.default ? slots.default() : [];
@@ -103,11 +104,12 @@ function initCollapse() {
   query.select("#gropContainer").boundingClientRect();
   query.exec((res) => {
     const [containerRect] = res;
-    endSeal.value = containerRect.bottom;
-    gropSeal.value.push({
+    addSeal({
       icon: props.icon,
+      id: getId(),
       top: getRpx(containerRect.top),
       height: containerHeight.value + spacing.base * 2,
+      offset: 0,
     });
   });
 }
