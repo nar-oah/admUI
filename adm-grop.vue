@@ -74,7 +74,9 @@ const rangeHeight = computed(() => {
   const minHeight = props.min / messageNum.value;
   return minHeight > pssHeight ? minHeight : pssHeight;
 });
-const containerHeight = computed(() => rangeHeight.value * messageNum.value);
+const containerHeight = computed(
+  () => props.height || rangeHeight.value * messageNum.value,
+);
 const random = computed(() => {
   const offRandom = Array.from({ length: messageNum.value }, () =>
     props.isRandom ? getRandom(0, rangeHeight.value - height.mini) : 0,
