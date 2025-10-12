@@ -12,7 +12,7 @@
       </view>
     </view>
     <view id="itemMain" class="main">
-      <view v-if="height" v-for="(item, index) in main.split('')" :key="index">
+      <view v-if="props.height" v-for="item in main.split('')">
         {{ item }}
       </view>
       <view v-else>
@@ -33,6 +33,11 @@ import { getRandom } from "./adm";
 import { light, dark, width, height, font } from "./constants";
 
 const props = defineProps({
+  type: {
+    type: String,
+    default: "medium",
+    required: false,
+  },
   borderText: {
     type: String,
     default: "委員會",
@@ -73,12 +78,19 @@ const props = defineProps({
     default: width.base,
     required: false,
   },
+  mainHeight: {
+    type: Number,
+    default: height.base,
+    required: false,
+  },
 });
 const main = ref<string>(initMain("管理局"));
+const emit = defineEmits(["height"]);
 const pssHeight = computed(() => {
-  const wrapHeight = height.base * main.value.length + font.mini * 2;
+  const wrapHeight = props.mainHeight * main.value.length + font.mini * 2;
   return props.height || wrapHeight;
 });
+emit("height", pssHeight.value);
 const border = computed(() => {
   const borderWidth = font.mini * (props.borderText.length + 0.5);
   return {
@@ -96,11 +108,15 @@ const left = computed(() => {
   };
 });
 const columnStyles = computed(() => {
+  const baseWidth = props.isThin ? height.mini : width.base;
   return {
     "--fore-color": props.isRev ? props.light : props.dark,
     "--bg-color": props.isRev ? props.dark : props.light,
     "--width": `${props.width}rpx`,
     "--height": `${pssHeight.value}rpx`,
+    "--font-type": `adm-${props.type}`,
+    "--main-offset": `${props.width - baseWidth + 21.05}rpx`,
+    "--line-height": `${props.mainHeight}rpx`,
     "--top-random": `${border.value.topRandom}rpx`,
     "--left-random": `${left.value.random}rpx`,
     "--bottom-random": `${border.value.bottomRandom}rpx`,
@@ -187,13 +203,13 @@ function initMain(defaultMain: string): string {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin-left: $width-mini + 5.26rpx;
+    margin-left: var(--main-offset);
     width: $font-base;
     height: var(--height);
-    line-height: $line-md;
+    line-height: var(--line-height);
 
     > view {
-      font-family: adm-medium;
+      font-family: var(--font-type);
       font-size: $font-base;
     }
   }
