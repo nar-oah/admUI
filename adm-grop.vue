@@ -20,10 +20,11 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, inject, provide, useSlots } from "vue";
+import { getCurrentInstance, inject, provide, ref, useSlots } from "vue";
 import { computed, onMounted } from "vue";
 import { getRandom, getRpx, addSeal } from "./adm";
 import { height, spacing } from "./constants";
+import { onPageScroll } from "@dcloudio/uni-app";
 const props = defineProps({
   isRandom: {
     type: Boolean,
@@ -61,6 +62,7 @@ const componentInstance = getCurrentInstance();
 const emit = defineEmits(["click"]);
 const slots = useSlots();
 const getId = inject("Seal", () => 0);
+const scrollTop = ref(0);
 let offsetCount = 0;
 const slotNodes = computed(() => {
   const slotArr = slots.default ? slots.default() : [];
@@ -98,7 +100,9 @@ const containerStyle = computed(() => {
 
 function getOffset() {
   const index = offsetCount;
-  offsetCount++;
+  offsetCount == random.value.length - 1
+    ? random.value.length - 1
+    : offsetCount++;
   return computed(() => random.value[index]);
 }
 function initCollapse() {
@@ -109,13 +113,16 @@ function initCollapse() {
     addSeal({
       icon: props.icon,
       id: getId(),
-      top: getRpx(containerRect.top),
+      top: getRpx(containerRect.top + scrollTop.value),
       height: containerHeight.value + spacing.base * 2,
       offset: 0,
     });
   });
 }
 onMounted(() => initCollapse());
+onPageScroll((e) => {
+  scrollTop.value = e.scrollTop;
+});
 provide("Grop", getOffset);
 </script>
 

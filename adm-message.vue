@@ -8,6 +8,7 @@
       :isRev="props.isRev"
       :light="props.light"
       :dark="props.dark"
+      :type="props.type"
       :width="props.height + additionHeight"
       :mainHeight="isClick ? mainWidth : 0"
     >
@@ -55,6 +56,11 @@ const props = defineProps({
   dark: {
     type: String,
     default: dark.primary,
+    required: false,
+  },
+  type: {
+    type: String,
+    default: "medium",
     required: false,
   },
   height: {

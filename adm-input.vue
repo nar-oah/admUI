@@ -1,11 +1,14 @@
 <template>
-  <input
-    class="slot"
-    type="text"
-    :placeholder="main"
-    @focus="rev = true"
-    @blur="rev = false"
-  />
+  <adm-message type="bold" :isGrop="true" :isRev="rev" :mainNum="main.length">
+    <input
+      class="slot"
+      type="text"
+      :placeholder="main"
+      @focus="rev = true"
+      @blur="rev = false"
+      @confirm="handleInput($event.detail.value)"
+    />
+  </adm-message>
 </template>
 
 <script setup lang="ts">
@@ -46,6 +49,7 @@ const props = defineProps({
 });
 const main = ref<string>(initMain("管理局"));
 const rev = ref<boolean>(props.isRev);
+const emit = defineEmits(["confirm"]);
 
 function initMain(defaultMain: string): string {
   const slots = useSlots();
@@ -53,12 +57,15 @@ function initMain(defaultMain: string): string {
   const children = vnodes[0].children;
   return typeof children === "string" ? children : defaultMain;
 }
+function handleInput(value: string) {
+  emit("confirm", value);
+}
 </script>
 
 <style scoped lang="scss">
 @import "./adm.scss";
 .slot {
-  font-family: adm-medium;
+  font-family: adm-bold;
   font-size: $font-base;
 
   :deep(.uni-input-placeholder) {
