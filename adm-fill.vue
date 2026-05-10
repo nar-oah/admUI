@@ -2,9 +2,7 @@
   <view id="fillWrap" class="wrap" :style="fillStyle">
     <slot></slot>
     <view class="fill">
-      <text id="fillText" class="text">
-        {{ fillText.repeat(repeat) }}
-      </text>
+      <text v-for="index in repeat" :key="index" class="text">{{ fillText }}</text>
     </view>
   </view>
 </template>
@@ -12,6 +10,7 @@
 <script setup lang="ts">
 import { getCurrentInstance, defineProps, onMounted, ref, computed } from "vue";
 import { screen, getRandom, getRpx } from "./adm";
+import { line } from "./constants";
 const props = defineProps({
   isRow: {
     type: Boolean,
@@ -31,6 +30,7 @@ const props = defineProps({
 });
 const componentInstance = getCurrentInstance();
 const bottom = ref(0);
+const fillLineHeight = line.sm;
 const screenHeight = computed(() =>
   props.isRow ? screen.value.width : screen.value.height,
 );
@@ -38,24 +38,20 @@ const total = computed(() => {
   const height = props.height || screenHeight.value - bottom.value;
   return getRpx(height <= 0 ? 50 - height : height);
 });
-const text = ref(total.value);
-const repeat = computed(() => Math.ceil(total.value / text.value) + 1);
+const repeat = computed(() => Math.ceil(total.value / fillLineHeight) + 2);
 const fillStyle = computed(() => {
   return {
     "--height": `${total.value}rpx`,
-    "--random": `-${getRandom(0, text.value)}rpx`,
+    "--random": `-${getRandom(0, fillLineHeight)}rpx`,
     "--deg": `${props.isRow ? -90 : 0}deg`,
   };
 });
 
 function initFill() {
   const query = uni.createSelectorQuery().in(componentInstance);
-  query.select("#fillText").boundingClientRect();
   query.select("#fillWrap").boundingClientRect();
   query.exec((res) => {
-    const [textRect, fillRect] = res;
-    const direction = props.isRow ? textRect.width : textRect.height;
-    text.value = getRpx(direction) / repeat.value;
+    const [fillRect] = res;
     bottom.value = fillRect.top;
   });
 }
@@ -77,18 +73,21 @@ onMounted(() => {
   transform-origin: calc($width-base / 2) calc($width-base / 2);
 
   .fill {
+    display: flex;
+    flex-direction: column;
     width: $width-base - $spacing-mini;
     margin-left: $spacing-mini;
+    margin-top: var(--random);
 
     .text {
-      display: flex;
-      overflow: hidden;
+      display: block;
+      flex: 0 0 $line-sm;
       color: $dark-primary;
       font-family: adm-medium;
       font-size: $font-sm;
       letter-spacing: $spacing-mini;
       line-height: $line-sm;
-      margin-top: var(--random);
+      white-space: nowrap;
     }
   }
 }
