@@ -12,6 +12,7 @@ export interface SealInfo {
   offset: number;
 }
 
+const maxScreenWidth = 960;
 export const screen = ref<ScreenInfo>(initScreen());
 export const sealList = ref<SealInfo[]>([]);
 export const sealHeight = computed(() => {
@@ -22,7 +23,10 @@ export const sealHeight = computed(() => {
 
 function initScreen(): ScreenInfo {
   const systemInfo = uni.getSystemInfoSync();
-  return { height: systemInfo.windowHeight, width: systemInfo.windowWidth };
+  return {
+    height: systemInfo.windowHeight,
+    width: Math.min(systemInfo.windowWidth, maxScreenWidth),
+  };
 }
 uni.onWindowResize(() => (screen.value = initScreen()));
 export function getRpx(px: number): number {
